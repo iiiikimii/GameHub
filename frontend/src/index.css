@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #f4f4ed;
+  background: #111512;
+
+  --lime: #c8f169;
+  --coral: #ef8b72;
+  --sky: #8fd2dd;
+  --surface: #171b19;
+  --surface-2: #1d2320;
+  --border: rgba(255,255,255,0.09);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  color: #172015;
+  background: #c8f169;
+}
+
+/* ── Rise animations ────────────────────────────────── */
+.animate-rise {
+  animation: rise-in 600ms cubic-bezier(0.22, 0.9, 0.25, 1) both;
+}
+
+.animate-rise-delayed {
+  animation: rise-in 650ms 100ms cubic-bezier(0.22, 0.9, 0.25, 1) both;
+}
+
+.animate-rise-1 { animation: rise-in 580ms 60ms  cubic-bezier(0.22,0.9,0.25,1) both; }
+.animate-rise-2 { animation: rise-in 580ms 120ms cubic-bezier(0.22,0.9,0.25,1) both; }
+.animate-rise-3 { animation: rise-in 580ms 180ms cubic-bezier(0.22,0.9,0.25,1) both; }
+.animate-rise-4 { animation: rise-in 580ms 240ms cubic-bezier(0.22,0.9,0.25,1) both; }
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Fade in ───────────────────────────────────────── */
+.animate-fade-in {
+  animation: fade-in 500ms ease both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Pulse glow ────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,241,105,0); }
+  50%       { box-shadow: 0 0 20px 4px rgba(200,241,105,0.18); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ── Shimmer skeleton ──────────────────────────────── */
+@keyframes shimmer {
+  from { background-position: -400px 0; }
+  to   { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1d2320 25%, #242b27 50%, #1d2320 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+
+/* ── Spin ──────────────────────────────────────────── */
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Progress bar fill ─────────────────────────────── */
+@keyframes progress-fill {
+  from { width: 0%; }
+}
+
+.animate-progress {
+  animation: progress-fill 900ms cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* ── Sidebar nav active indicator ──────────────────── */
+.nav-active-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 3px 3px 0;
+  background: #c8f169;
+}
+
+/* ── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
