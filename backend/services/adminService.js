@@ -124,26 +124,41 @@ export async function adminListGames() {
 export async function adminCreateGame(data) {
   const { name, slug, description, category, difficulty } = data
   if (!name || !slug || !category || !difficulty) throw httpError(400, 'name, slug, category, difficulty are required')
-  const [result] = await pool.query(
-    'INSERT INTO games (name, slug, description, category, difficulty, is_active) VALUES (?, ?, ?, ?, ?, 1)',
-    [name.trim(), slug.trim().toLowerCase(), description || null, category, difficulty],
-  )
-  return { id: result.insertId, name, slug, category, difficulty }
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO games (name, slug, description, category, difficulty, is_active) VALUES (?, ?, ?, ?, ?, 1)',
+      [name.trim(), slug.trim().toLowerCase(), description || null, category, difficulty],
+    )
+    return { id: result.insertId, name, slug, category, difficulty }
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      throw httpError(409, 'Game slug is already taken')
+    }
+    throw error
+  }
 }
 
 export async function adminUpdateGame(gameId, data) {
   const fields = []
   const params = []
-  const allowed = ['name', 'description', 'category', 'difficulty', 'thumbnail']
+  const allowed = ['name', 'slug', 'description', 'category', 'difficulty', 'thumbnail']
   for (const key of allowed) {
     if (data[key] !== undefined) { fields.push(`${key} = ?`); params.push(data[key]) }
   }
   if (data.is_active !== undefined) { fields.push('is_active = ?'); params.push(data.is_active ? 1 : 0) }
   if (fields.length === 0) throw httpError(400, 'No fields to update')
   params.push(gameId)
-  const [result] = await pool.query(`UPDATE games SET ${fields.join(', ')} WHERE id = ?`, params)
-  if (result.affectedRows === 0) throw httpError(404, 'Game not found')
-  return { gameId: Number(gameId) }
+  
+  try {
+    const [result] = await pool.query(`UPDATE games SET ${fields.join(', ')} WHERE id = ?`, params)
+    if (result.affectedRows === 0) throw httpError(404, 'Game not found')
+    return { gameId: Number(gameId) }
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      throw httpError(409, 'Game slug is already taken')
+    }
+    throw error
+  }
 }
 
 export async function adminDeleteGame(gameId) {

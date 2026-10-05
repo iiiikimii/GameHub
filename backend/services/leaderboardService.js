@@ -157,16 +157,20 @@ export async function getGameLeaderboard(userId, gameId, query) {
   let userRank = null
   if (userBestScore > 0) {
     // Count how many distinct users beat the current user's best score
+    // Tie break: if scores are equal, lower user_id wins.
     const [rankRows] = await pool.query(
       `SELECT COUNT(DISTINCT s2.user_id) + 1 AS r
        FROM scores s2
        WHERE s2.game_id = ?
          AND s2.user_id != ?
          AND (
-           SELECT MAX(s3.score) FROM scores s3
-           WHERE s3.user_id = s2.user_id AND s3.game_id = ?
-         ) > ?`,
-      [gameId, userId, gameId, userBestScore],
+           (SELECT MAX(s3.score) FROM scores s3 WHERE s3.user_id = s2.user_id AND s3.game_id = ?) > ?
+           OR (
+             (SELECT MAX(s4.score) FROM scores s4 WHERE s4.user_id = s2.user_id AND s4.game_id = ?) = ?
+             AND s2.user_id < ?
+           )
+         )`,
+      [gameId, userId, gameId, userBestScore, gameId, userBestScore, userId],
     )
     userRank = Number(rankRows[0].r)
   }

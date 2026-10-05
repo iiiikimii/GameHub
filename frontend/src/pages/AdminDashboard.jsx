@@ -5,14 +5,14 @@ import { adminApi } from '../services/adminService.js'
 
 function StatCard({ label, value, icon: Icon, color }) {
   return (
-    <div className="border border-white/[0.08] bg-[#171b19] p-5">
-      <div className="flex items-center gap-3">
-        <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${color.bg}`}>
-          <Icon aria-hidden="true" className={`size-4 ${color.text}`} />
+    <div className="glass-card rounded-xl p-5 hover:-translate-y-1 transition-transform">
+      <div className="flex items-center gap-4">
+        <span className={`grid size-12 shrink-0 place-items-center rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.2)] ${color.bg}`}>
+          <Icon aria-hidden="true" className={`size-5 ${color.text}`} />
         </span>
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40">{label}</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">{label}</p>
+          <p className="heading-gradient mt-1 text-2xl font-bold tabular-nums tracking-tight">{value}</p>
         </div>
       </div>
     </div>
@@ -70,17 +70,17 @@ export default function AdminDashboard() {
           />
           
           <div className="col-span-full mt-4 grid gap-4 sm:grid-cols-3">
-             <div className="border border-white/[0.05] p-4 text-center">
-               <p className="text-xl font-semibold text-emerald-400">{stats.totalSessions.toLocaleString()}</p>
-               <p className="text-xs text-white/40">Game Sessions</p>
+             <div className="glass-card rounded-xl p-5 text-center transition hover:-translate-y-1">
+               <p className="heading-gradient text-3xl font-bold">{stats.totalSessions.toLocaleString()}</p>
+               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-emerald-400">Game Sessions</p>
              </div>
-             <div className="border border-white/[0.05] p-4 text-center">
-               <p className="text-xl font-semibold text-[#c8f169]">{stats.totalScoreSum.toLocaleString()}</p>
-               <p className="text-xs text-white/40">Total Points Earned</p>
+             <div className="glass-card rounded-xl p-5 text-center transition hover:-translate-y-1">
+               <p className="heading-gradient text-3xl font-bold">{stats.totalScoreSum.toLocaleString()}</p>
+               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#c8f169]">Total Points Earned</p>
              </div>
-             <div className="border border-white/[0.05] p-4 text-center">
-               <p className="text-xl font-semibold text-[#8fd2dd]">{stats.totalAchievementsUnlocked.toLocaleString()}</p>
-               <p className="text-xs text-white/40">Achievements Unlocked</p>
+             <div className="glass-card rounded-xl p-5 text-center transition hover:-translate-y-1">
+               <p className="heading-gradient text-3xl font-bold">{stats.totalAchievementsUnlocked.toLocaleString()}</p>
+               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#8fd2dd]">Achievements Unlocked</p>
              </div>
           </div>
         </div>

@@ -10,53 +10,53 @@ export default function ChallengeCard({ challenge }) {
   const isCompleted = Boolean(challenge.completed)
 
   return (
-    <article className="relative overflow-hidden border border-white/[0.08] bg-[#171b19]">
+    <article className="relative overflow-hidden rounded-2xl glass-card">
       {/* Gradient background accent */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-40"
+        className="pointer-events-none absolute inset-0 opacity-50"
         style={{
           background:
-            'radial-gradient(ellipse at 90% 10%, rgba(239,139,114,0.12) 0%, transparent 60%)',
+            'radial-gradient(ellipse at 90% 10%, rgba(239,139,114,0.15) 0%, transparent 60%)',
         }}
         aria-hidden="true"
       />
 
       {/* Corner decoration */}
-      <div className="pointer-events-none absolute right-5 top-5 size-20 -translate-y-1/2 translate-x-1/2 rotate-45 border border-[#ef8b72]/12" aria-hidden="true" />
+      <div className="pointer-events-none absolute right-5 top-5 size-24 -translate-y-1/2 translate-x-1/2 rotate-45 border border-[#ef8b72]/15 shadow-[0_0_20px_rgba(239,139,114,0.1)]" aria-hidden="true" />
 
       <div className="relative p-5 sm:p-7">
         {/* Header row */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-[#ef8b72]">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#ef8b72]">
               Daily challenge
             </p>
-            <h3 className="mt-2 text-xl font-semibold leading-snug">{challenge.title}</h3>
-            <p className="mt-1.5 max-w-lg text-sm leading-[1.6] text-white/48">
+            <h3 className="heading-gradient mt-2 text-2xl font-bold leading-snug">{challenge.title}</h3>
+            <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/60">
               {challenge.description}
             </p>
           </div>
 
           <span
-            className={`grid size-11 shrink-0 place-items-center rounded-xl transition ${
+            className={`grid size-12 shrink-0 place-items-center rounded-2xl transition shadow-[0_0_15px_rgba(0,0,0,0.2)] ${
               isCompleted
-                ? 'bg-[#c8f169]/12 text-[#c8f169]'
-                : 'bg-[#ef8b72]/10 text-[#ef8b72]'
+                ? 'bg-[#c8f169]/15 text-[#c8f169]'
+                : 'bg-[#ef8b72]/15 text-[#ef8b72]'
             }`}
           >
             {isCompleted ? (
-              <CheckCircle2 className="size-5" aria-hidden="true" />
+              <CheckCircle2 className="size-6" aria-hidden="true" />
             ) : (
-              <Target className="size-5" aria-hidden="true" />
+              <Target className="size-6" aria-hidden="true" />
             )}
           </span>
         </div>
 
         {/* Progress */}
-        <div className="mt-6">
-          <div className="mb-2 flex items-center justify-between text-xs">
-            <span className="text-white/45">{challenge.game_name ?? 'Any game'}</span>
-            <span className="font-semibold text-white/80">
+        <div className="mt-7">
+          <div className="mb-2.5 flex items-center justify-between text-xs">
+            <span className="text-white/50 font-medium">{challenge.game_name ?? 'Any game'}</span>
+            <span className="font-bold text-white">
               {progress.toLocaleString('id-ID')} / {target.toLocaleString('id-ID')}
             </span>
           </div>
@@ -66,27 +66,27 @@ export default function ChallengeCard({ challenge }) {
             label={`Progress ${challenge.title}`}
             tone="coral"
           />
-          <p className={`mt-1.5 text-right text-[11px] font-semibold ${isCompleted ? 'text-[#c8f169]' : 'text-[#ef8b72]'}`}>
-            {isCompleted ? '✓ Complete!' : `${percent}%`}
+          <p className={`mt-2 text-right text-[11px] font-bold tracking-wider ${isCompleted ? 'text-[#c8f169]' : 'text-[#ef8b72]'}`}>
+            {isCompleted ? '✓ COMPLETE' : `${percent}%`}
           </p>
         </div>
 
         {/* Footer row */}
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.08] pt-4 text-xs">
-          <span className="inline-flex items-center gap-1.5 text-white/40">
-            <CalendarDays className="size-3.5" aria-hidden="true" />
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-5 text-xs">
+          <span className="inline-flex items-center gap-1.5 text-white/50 font-medium">
+            <CalendarDays className="size-4" aria-hidden="true" />
             Ends {endDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
           </span>
-          <span className="inline-flex items-center gap-1.5 font-semibold text-[#c8f169]">
-            <Gift className="size-3.5" aria-hidden="true" />
-            +{Number(challenge.reward_points).toLocaleString('id-ID')} pts reward
+          <span className="inline-flex items-center gap-1.5 font-bold text-[#c8f169]">
+            <Gift className="size-4" aria-hidden="true" />
+            +{Number(challenge.reward_points).toLocaleString('id-ID')} pts
           </span>
           <Link
             to="/challenges"
-            className="inline-flex items-center gap-1 text-white/35 transition hover:text-white/70"
+            className="inline-flex items-center gap-1.5 text-white/50 font-medium transition hover:text-white"
             aria-label="Lihat semua challenge"
           >
-            View all <ArrowRight className="size-3.5" />
+            View all <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>

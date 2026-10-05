@@ -95,6 +95,20 @@ export async function submitScore({ userId, gameSlug, score, duration }) {
           'INSERT INTO challenge_progress (user_id, challenge_id, progress, completed, completed_at) VALUES (?, ?, ?, ?, ?)',
           [userId, challenge.id, newProgress, completed, completedAt],
         )
+
+        // Award reward points if just completed on the first try
+        if (completed) {
+          const [ch] = await connection.execute(
+            'SELECT reward_points FROM challenges WHERE id = ? LIMIT 1',
+            [challenge.id],
+          )
+          if (ch.length > 0 && ch[0].reward_points > 0) {
+            await connection.execute(
+              'UPDATE users SET total_score = total_score + ? WHERE id = ?',
+              [ch[0].reward_points, userId],
+            )
+          }
+        }
       } else if (!existing[0].completed) {
         // Update progress if not already completed
         const newProgress = Math.max(existing[0].progress, rawScore)

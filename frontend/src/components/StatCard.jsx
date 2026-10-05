@@ -29,24 +29,24 @@ export default function StatCard({ label, value, detail, icon: Icon, tone = 'lim
   const t = tones[tone] ?? tones.lime
 
   return (
-    <article className={`group relative min-w-0 overflow-hidden border border-white/[0.08] bg-[#171b19] p-5 transition duration-300 hover:border-white/15 hover:-translate-y-0.5 sm:p-6 ${t.glow}`}>
+    <article className={`group relative min-w-0 overflow-hidden rounded-2xl glass-card p-5 sm:p-6 ${t.glow}`}>
       {/* Corner accent */}
-      <div className="pointer-events-none absolute right-0 top-0 h-16 w-16 -translate-y-1/2 translate-x-1/2 rounded-full opacity-30 blur-xl" style={{ background: 'currentColor' }} aria-hidden="true" />
+      <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 -translate-y-1/2 translate-x-1/2 rounded-full opacity-40 blur-2xl" style={{ background: 'currentColor' }} aria-hidden="true" />
 
       <div className="relative flex items-start justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-white/40">{label}</p>
-        <span className={`grid size-10 shrink-0 place-items-center rounded-xl ring-1 transition duration-300 ${t.icon}`}>
-          <Icon aria-hidden="true" className="size-[18px]" />
+        <p className="text-[11px] font-bold uppercase tracking-widest text-white/50">{label}</p>
+        <span className={`grid size-12 shrink-0 place-items-center rounded-2xl ring-1 transition duration-300 group-hover:scale-110 ${t.icon}`}>
+          <Icon aria-hidden="true" className="size-[20px]" />
         </span>
       </div>
 
-      <p className="relative mt-5 truncate text-[2rem] font-semibold leading-none tracking-tight text-[#f4f4ed]">
+      <p className="heading-gradient relative mt-4 truncate text-[2.25rem] font-bold leading-none tracking-tight">
         {value}
       </p>
 
-      <div className="relative mt-2 flex items-center gap-2">
-        <span className={`size-1.5 shrink-0 rounded-full ${t.dot}`} aria-hidden="true" />
-        <p className="truncate text-xs text-white/38">{detail}</p>
+      <div className="relative mt-3 flex items-center gap-2">
+        <span className={`size-2 shrink-0 rounded-full animate-pulse-glow ${t.dot}`} aria-hidden="true" />
+        <p className="truncate text-xs font-medium text-white/40">{detail}</p>
       </div>
     </article>
   )
