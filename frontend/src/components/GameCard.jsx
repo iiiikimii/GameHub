@@ -9,25 +9,22 @@ const gameIcons = {
 
 const gameTones = {
   Reflex: {
-    icon: 'bg-[#c8f169]/12 text-[#c8f169]',
-    badge: 'bg-[#c8f169]/10 text-[#c8f169]',
-    glow: 'group-hover:border-[#c8f169]/30 group-hover:shadow-[0_0_20px_-4px_rgba(200,241,105,0.2)]',
+    icon: 'bg-[#8b8bff]/12 text-[#8b8bff]',
+    badge: 'bg-[#8b8bff]/10 text-[#8b8bff]',
   },
   Puzzle: {
-    icon: 'bg-[#8fd2dd]/12 text-[#8fd2dd]',
-    badge: 'bg-[#8fd2dd]/10 text-[#8fd2dd]',
-    glow: 'group-hover:border-[#8fd2dd]/30 group-hover:shadow-[0_0_20px_-4px_rgba(143,210,221,0.2)]',
+    icon: 'bg-[#7dd3fc]/12 text-[#7dd3fc]',
+    badge: 'bg-[#7dd3fc]/10 text-[#7dd3fc]',
   },
   Memory: {
     icon: 'bg-[#ef8b72]/12 text-[#ef8b72]',
     badge: 'bg-[#ef8b72]/10 text-[#ef8b72]',
-    glow: 'group-hover:border-[#ef8b72]/30 group-hover:shadow-[0_0_20px_-4px_rgba(239,139,114,0.2)]',
   },
 }
 
 const difficultyColors = {
-  Easy: 'text-[#c8f169] bg-[#c8f169]/10 border border-[#c8f169]/20',
-  Medium: 'text-[#8fd2dd] bg-[#8fd2dd]/10 border border-[#8fd2dd]/20',
+  Easy: 'text-[#8b8bff] bg-[#8b8bff]/10 border border-[#8b8bff]/20',
+  Medium: 'text-[#7dd3fc] bg-[#7dd3fc]/10 border border-[#7dd3fc]/20',
   Hard: 'text-[#ef8b72] bg-[#ef8b72]/10 border border-[#ef8b72]/20',
 }
 
@@ -39,11 +36,11 @@ export default function GameCard({ game, variant = 'recommended' }) {
 
   return (
     <article
-      className={`group relative min-w-0 overflow-hidden rounded-2xl glass-card p-4 sm:p-5 ${tone.glow}`}
+      className="group relative min-w-0 overflow-hidden rounded-xl glass-card p-4 sm:p-5"
     >
       <div className="flex items-start gap-4">
         {/* Icon */}
-        <span className={`grid size-14 shrink-0 place-items-center rounded-2xl transition duration-300 group-hover:scale-110 ${tone.icon}`}>
+        <span className={`grid size-12 shrink-0 place-items-center rounded-lg ${tone.icon}`}>
           <Icon aria-hidden="true" className="size-6" />
         </span>
 
@@ -72,7 +69,7 @@ export default function GameCard({ game, variant = 'recommended' }) {
         <Link
           to={`/games/${game.slug}`}
           aria-label={`${isRecent ? 'Lihat hasil' : 'Main'} ${game.name}`}
-          className="grid size-10 shrink-0 place-items-center rounded-full bg-white/5 border border-white/10 text-white transition duration-200 hover:scale-110 hover:border-[#c8f169]/40 hover:bg-[#c8f169] hover:text-[#172015] hover:shadow-[0_0_15px_rgba(200,241,105,0.4)]"
+          className="grid size-10 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/[0.03] text-white/70 transition hover:border-[#8b8bff]/40 hover:bg-[#8b8bff] hover:text-[#172015]"
         >
           {isRecent ? <ArrowUpRight className="size-4" /> : <Play className="size-4 translate-x-[1px]" />}
         </Link>

@@ -12,16 +12,17 @@ export function generateGrid(count = 9) {
 }
 
 // Score: base points per correct click, minus penalty for wrongs, bonus for time remaining
-export function calculateNumberRushScore({ correct, wrong, timeLeft, totalTime, gridSize }) {
+export function calculateNumberRushScore({ correct, wrong, timeLeft, totalTime }) {
   const BASE_PER_CORRECT = 80
   const WRONG_PENALTY = 40
   const TIME_BONUS_MAX = 200
+  const MAX_SCORE = 2000
 
   const correctPoints = correct * BASE_PER_CORRECT
   const wrongDeductions = wrong * WRONG_PENALTY
   const timeBonus = Math.round((timeLeft / totalTime) * TIME_BONUS_MAX)
 
-  return Math.max(0, correctPoints - wrongDeductions + timeBonus)
+  return Math.min(MAX_SCORE, Math.max(0, correctPoints - wrongDeductions + timeBonus))
 }
 
 // Grid configurations for different sizes

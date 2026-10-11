@@ -3,7 +3,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Grid2X2,
-  Loader2,
   RefreshCw,
   Search,
   Trophy,
@@ -25,8 +24,8 @@ const MEDAL = {
 }
 
 const CATEGORY_META = {
-  Reflex: { icon: Zap,      color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10' },
-  Puzzle: { icon: Grid2X2,  color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10' },
+  Reflex: { icon: Zap,      color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10' },
+  Puzzle: { icon: Grid2X2,  color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10' },
   Memory: { icon: Brain,    color: 'text-[#ef8b72]', bg: 'bg-[#ef8b72]/10' },
 }
 
@@ -58,7 +57,7 @@ function Avatar({ username, size = 'md' }) {
   const sizeClass = size === 'lg' ? 'size-11 text-sm' : 'size-9 text-xs'
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-full bg-[#c8f169]/12 font-bold text-[#c8f169] ${sizeClass}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full bg-[#8b8bff]/12 font-bold text-[#8b8bff] ${sizeClass}`}
       aria-hidden="true"
     >
       {initials}
@@ -81,7 +80,7 @@ function SkeletonRow() {
 
 // ─── Leaderboard entry row ───────────────────────────────────
 
-function LeaderboardRow({ entry, isCurrentUser, index }) {
+function LeaderboardRow({ entry, isCurrentUser }) {
   const medal = MEDAL[entry.rank]
   const isTop3 = entry.rank <= 3
 
@@ -89,7 +88,7 @@ function LeaderboardRow({ entry, isCurrentUser, index }) {
     <div
       className={`group flex items-center gap-4 border-b border-white/[0.06] px-4 py-3.5 transition duration-150 sm:px-6
         ${isCurrentUser
-          ? 'bg-[#c8f169]/[0.04] border-l-2 border-l-[#c8f169]/40'
+          ? 'bg-[#8b8bff]/[0.04] border-l-2 border-l-[#8b8bff]/40'
           : 'hover:bg-white/[0.02]'
         }
         ${isTop3 ? 'py-4' : ''}
@@ -108,14 +107,14 @@ function LeaderboardRow({ entry, isCurrentUser, index }) {
       <div className="min-w-0 flex-1">
         <p className={`truncate font-semibold leading-none ${
           isCurrentUser
-            ? 'text-[#c8f169]'
+            ? 'text-[#8b8bff]'
             : isTop3
             ? 'text-[#f4f4ed] text-[15px]'
             : 'text-[#f4f4ed]/85 text-sm'
         }`}>
           {entry.username}
           {isCurrentUser && (
-            <span className="ml-2 inline-flex items-center rounded-full bg-[#c8f169]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#c8f169]">
+            <span className="ml-2 inline-flex items-center rounded-full bg-[#8b8bff]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#8b8bff]">
               You
             </span>
           )}
@@ -130,7 +129,7 @@ function LeaderboardRow({ entry, isCurrentUser, index }) {
       {/* Score */}
       <div className="shrink-0 text-right">
         <p className={`tabular-nums font-semibold ${
-          isCurrentUser ? 'text-[#c8f169]' : isTop3 ? 'text-white text-lg' : 'text-white/75 text-sm'
+          isCurrentUser ? 'text-[#8b8bff]' : isTop3 ? 'text-white text-lg' : 'text-white/75 text-sm'
         }`}>
           {entry.totalScore.toLocaleString('id-ID')}
         </p>
@@ -145,22 +144,22 @@ function LeaderboardRow({ entry, isCurrentUser, index }) {
 function CurrentUserBanner({ entry, label }) {
   if (!entry || entry.totalScore === 0) return null
   return (
-    <div className="flex items-center gap-4 border border-[#c8f169]/20 bg-[#c8f169]/[0.04] px-4 py-3.5 sm:px-6">
+    <div className="flex items-center gap-4 border border-[#8b8bff]/20 bg-[#8b8bff]/[0.04] px-4 py-3.5 sm:px-6">
       <div className="w-10 shrink-0 flex justify-center">
         <RankBadge rank={entry.rank ?? '—'} />
       </div>
       <Avatar username={entry.username} />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-[#c8f169]">
+        <p className="truncate text-sm font-semibold text-[#8b8bff]">
           {entry.username}
-          <span className="ml-2 inline-flex items-center rounded-full bg-[#c8f169]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#c8f169]">
+          <span className="ml-2 inline-flex items-center rounded-full bg-[#8b8bff]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#8b8bff]">
             You
           </span>
         </p>
         <p className="mt-0.5 text-[10px] text-white/35">{label}</p>
       </div>
       <div className="shrink-0 text-right">
-        <p className="tabular-nums text-sm font-semibold text-[#c8f169]">
+        <p className="tabular-nums text-sm font-semibold text-[#8b8bff]">
           {entry.totalScore.toLocaleString('id-ID')}
         </p>
         <p className="text-[10px] text-white/25">pts</p>
@@ -290,7 +289,7 @@ export default function LeaderboardPage() {
     <DashboardLayout>
       {/* ── Page header ── */}
       <header className="animate-rise">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#c8f169]">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8b8bff]">
           Global rankings
         </p>
         <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -301,8 +300,8 @@ export default function LeaderboardPage() {
             </p>
           </div>
           {/* Trophy icon accent */}
-          <span className="hidden shrink-0 items-center justify-center rounded-2xl bg-[#c8f169]/10 p-4 sm:flex">
-            <Trophy className="size-7 text-[#c8f169]" aria-hidden="true" />
+          <span className="hidden shrink-0 items-center justify-center rounded-2xl bg-[#8b8bff]/10 p-4 sm:flex">
+            <Trophy className="size-7 text-[#8b8bff]" aria-hidden="true" />
           </span>
         </div>
       </header>
@@ -346,7 +345,7 @@ export default function LeaderboardPage() {
             onChange={handleSearchChange}
             placeholder="Search player…"
             aria-label="Search player"
-            className="h-10 w-full rounded-lg border border-white/[0.08] bg-[#171b19] pl-10 pr-9 text-sm text-white placeholder-white/25 outline-none transition focus:border-[#c8f169]/40 focus:ring-1 focus:ring-[#c8f169]/20"
+            className="h-10 w-full rounded-lg border border-white/[0.08] bg-[#171a2b] pl-10 pr-9 text-sm text-white placeholder-white/25 outline-none transition focus:border-[#8b8bff]/40 focus:ring-1 focus:ring-[#8b8bff]/20"
           />
           {searchInput && (
             <button
@@ -367,10 +366,10 @@ export default function LeaderboardPage() {
         )}
 
         {/* ── Table container ── */}
-        <div className="overflow-hidden border border-white/[0.08] bg-[#0f1311]">
+        <div className="overflow-hidden border border-white/[0.08] bg-[#0f1120]">
 
           {/* Column headers */}
-          <div className="flex items-center gap-4 border-b border-white/[0.08] bg-[#171b19] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white/30 sm:px-6">
+          <div className="flex items-center gap-4 border-b border-white/[0.08] bg-[#171a2b] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white/30 sm:px-6">
             <div className="w-10 shrink-0 text-center">Rank</div>
             <div className="size-9 shrink-0" />
             <div className="flex-1">Player</div>
@@ -452,7 +451,7 @@ function TabButton({ active, onClick, children }) {
       onClick={onClick}
       className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition duration-150 whitespace-nowrap
         ${active
-          ? 'border-[#c8f169]/35 bg-[#c8f169]/10 text-[#c8f169]'
+          ? 'border-[#8b8bff]/35 bg-[#8b8bff]/10 text-[#8b8bff]'
           : 'border-white/[0.08] bg-transparent text-white/45 hover:border-white/15 hover:text-white/70'
         }`}
     >

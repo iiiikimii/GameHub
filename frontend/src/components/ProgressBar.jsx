@@ -2,13 +2,13 @@ export default function ProgressBar({ value, max, label, tone = 'lime' }) {
   const progress = max > 0 ? Math.min(100, Math.max(0, (value / max) * 100)) : 0
 
   const toneStyles = {
-    lime: 'bg-[#c8f169]',
+    lime: 'bg-[#8b8bff]',
     coral: 'bg-[#ef8b72]',
-    sky: 'bg-[#8fd2dd]',
+    sky: 'bg-[#7dd3fc]',
   }
 
   const glowStyles = {
-    lime: 'shadow-[0_0_10px_rgba(200,241,105,0.6)]',
+    lime: 'shadow-[0_0_10px_rgba(139, 139, 255,0.6)]',
     coral: 'shadow-[0_0_10px_rgba(239,139,114,0.6)]',
     sky: 'shadow-[0_0_10px_rgba(143,210,221,0.6)]',
   }

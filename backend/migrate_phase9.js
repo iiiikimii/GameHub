@@ -14,8 +14,9 @@ async function main() {
     rows.forEach((r) => console.log(`  ${r.id}. ${r.name}`))
   } catch (err) {
     console.error('Migration error:', err.message)
+    process.exitCode = 1
   } finally {
-    process.exit(0)
+    await pool.end()
   }
 }
 

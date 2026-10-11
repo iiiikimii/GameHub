@@ -1,4 +1,7 @@
 import pool from '../config/database.js'
+import { processSessionForQuests } from './questService.js'
+import { processRankedSession } from './rankedService.js'
+import { recordFriendActivity } from './socialService.js'
 
 // Score limits per game category to prevent cheating
 const SCORE_LIMITS = {
@@ -13,13 +16,36 @@ function httpError(statusCode, message) {
   return error
 }
 
-export async function submitScore({ userId, gameSlug, score, duration }) {
+export async function submitScore(input) {
+  // Retrying the same key is safe: the unique submission constraint turns a
+  // retry after a committed-but-uncertain response into an idempotent result.
+  const maxRetries = 2
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await submitScoreAttempt(input)
+    } catch (error) {
+      const retryable = error.code === 'ER_LOCK_DEADLOCK' || error.code === 'ER_LOCK_WAIT_TIMEOUT'
+      if (!retryable || attempt >= maxRetries) throw error
+      await new Promise((resolve) => setTimeout(resolve, 25 * (attempt + 1)))
+    }
+  }
+}
+
+async function submitScoreAttempt({ userId, gameSlug, score, duration, submissionKey }) {
   // Validate inputs
   const rawScore = Number(score)
   const rawDuration = Number(duration)
 
   if (!Number.isFinite(rawScore) || !Number.isFinite(rawDuration)) {
     throw httpError(400, 'Score and duration must be valid numbers')
+  }
+
+  if (!Number.isInteger(rawScore)) {
+    throw httpError(400, 'Score must be a whole number')
+  }
+
+  if (typeof submissionKey !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(submissionKey)) {
+    throw httpError(400, 'A valid submission key is required')
   }
 
   const limits = SCORE_LIMITS[gameSlug]
@@ -51,17 +77,31 @@ export async function submitScore({ userId, gameSlug, score, duration }) {
   try {
     await connection.beginTransaction()
 
-    // Insert score record
+    // Serialize this user's score-derived milestones and verify the account is still active.
+    const [accountRows] = await connection.execute(
+      'SELECT id FROM users WHERE id = ? AND is_active = 1 FOR UPDATE',
+      [userId],
+    )
+    if (!accountRows.length) throw httpError(403, 'This account is disabled')
+
+    const [[bestScoreRow]] = await connection.execute(
+      'SELECT MAX(score) AS best_score FROM scores WHERE user_id = ? AND game_id = ?',
+      [userId, gameId],
+    )
+    const isPersonalBest = bestScoreRow.best_score == null || rawScore > Number(bestScoreRow.best_score)
+
+    // Insert score first so the unique submission key serializes concurrent retries.
     const [scoreResult] = await connection.execute(
-      'INSERT INTO scores (user_id, game_id, score, duration) VALUES (?, ?, ?, ?)',
-      [userId, gameId, rawScore, rawDuration.toFixed(3)],
+      'INSERT INTO scores (user_id, game_id, submission_key, score, duration) VALUES (?, ?, ?, ?, ?)',
+      [userId, gameId, submissionKey, rawScore, rawDuration.toFixed(3)],
     )
 
     // Insert game session record
-    await connection.execute(
-      'INSERT INTO game_sessions (user_id, game_id, score, duration) VALUES (?, ?, ?, ?)',
+    const [sessionResult] = await connection.execute(
+      'INSERT INTO game_sessions (user_id, game_id, score, duration, played_at) VALUES (?, ?, ?, ?, UTC_TIMESTAMP(3))',
       [userId, gameId, rawScore, rawDuration.toFixed(3)],
     )
+    const sessionId = sessionResult.insertId
 
     // Update user total_score
     await connection.execute(
@@ -69,83 +109,98 @@ export async function submitScore({ userId, gameSlug, score, duration }) {
       [rawScore, userId],
     )
 
+    // Process quest progression & award session XP atomically
+    const questResult = await processSessionForQuests({
+      connection,
+      userId,
+      sessionId,
+    })
+
+    // Process ranked rating progression (RP, Tier, Match History) atomically
+    const rankedResult = await processRankedSession({
+      connection,
+      userId,
+      sessionId,
+      scoreId: scoreResult.insertId,
+    })
+
     // Update challenge progress for active challenges linked to this game or generic
     const [challenges] = await connection.execute(
-      `SELECT c.id, c.target_score
+      `SELECT c.id, c.target_score, c.reward_points
        FROM challenges c
        WHERE c.is_active = 1
          AND c.start_date <= UTC_TIMESTAMP(3)
          AND c.end_date >= UTC_TIMESTAMP(3)
-         AND (c.game_id = ? OR c.game_id IS NULL)`,
+         AND (c.game_id = ? OR c.game_id IS NULL)
+       ORDER BY c.id ASC`,
       [gameId],
     )
 
     for (const challenge of challenges) {
+      // Create a progress row before locking it so concurrent sessions cannot
+      // both observe a missing row and award the same completion.
+      await connection.execute(
+        `INSERT IGNORE INTO challenge_progress (user_id, challenge_id, progress, completed)
+         VALUES (?, ?, 0, 0)`,
+        [userId, challenge.id],
+      )
       const [existing] = await connection.execute(
-        'SELECT id, progress, completed FROM challenge_progress WHERE user_id = ? AND challenge_id = ? LIMIT 1',
+        `SELECT id, progress, completed
+         FROM challenge_progress
+         WHERE user_id = ? AND challenge_id = ?
+         FOR UPDATE`,
         [userId, challenge.id],
       )
 
-      if (existing.length === 0) {
-        // Create progress record
-        const newProgress = Math.min(rawScore, challenge.target_score)
-        const completed = newProgress >= challenge.target_score ? 1 : 0
-        const completedAt = completed ? new Date() : null
-        await connection.execute(
-          'INSERT INTO challenge_progress (user_id, challenge_id, progress, completed, completed_at) VALUES (?, ?, ?, ?, ?)',
-          [userId, challenge.id, newProgress, completed, completedAt],
-        )
+      const progressRow = existing[0]
+      if (!progressRow || progressRow.completed) continue
 
-        // Award reward points if just completed on the first try
-        if (completed) {
-          const [ch] = await connection.execute(
-            'SELECT reward_points FROM challenges WHERE id = ? LIMIT 1',
-            [challenge.id],
-          )
-          if (ch.length > 0 && ch[0].reward_points > 0) {
-            await connection.execute(
-              'UPDATE users SET total_score = total_score + ? WHERE id = ?',
-              [ch[0].reward_points, userId],
-            )
-          }
-        }
-      } else if (!existing[0].completed) {
-        // Update progress if not already completed
-        const newProgress = Math.max(existing[0].progress, rawScore)
-        const completed = newProgress >= challenge.target_score ? 1 : 0
-        const completedAt = completed && !existing[0].completed ? new Date() : null
-        await connection.execute(
-          `UPDATE challenge_progress
-           SET progress = ?, completed = ?,
-               completed_at = COALESCE(completed_at, ?)
-           WHERE id = ?`,
-          [newProgress, completed, completedAt, existing[0].id],
-        )
+      const newProgress = Math.min(
+        Number(challenge.target_score),
+        Math.max(Number(progressRow.progress), rawScore),
+      )
+      const completed = newProgress >= Number(challenge.target_score)
+      await connection.execute(
+        `UPDATE challenge_progress
+         SET progress = ?, completed = ?,
+             completed_at = IF(?, COALESCE(completed_at, UTC_TIMESTAMP(3)), completed_at)
+         WHERE id = ?`,
+        [newProgress, completed ? 1 : 0, completed ? 1 : 0, progressRow.id],
+      )
 
-        // Award reward points if just completed
-        if (completed) {
-          const [ch] = await connection.execute(
-            'SELECT reward_points FROM challenges WHERE id = ? LIMIT 1',
-            [challenge.id],
-          )
-          if (ch.length > 0 && ch[0].reward_points > 0) {
-            await connection.execute(
-              'UPDATE users SET total_score = total_score + ? WHERE id = ?',
-              [ch[0].reward_points, userId],
-            )
-          }
-        }
+      if (completed && Number(challenge.reward_points) > 0) {
+        await connection.execute(
+          'UPDATE users SET total_score = total_score + ? WHERE id = ?',
+          [challenge.reward_points, userId],
+        )
       }
     }
 
-    // Check and award achievements
-    await checkAchievements(connection, userId, gameSlug, rawScore, rawDuration)
+    // Check and award achievements, then persist social events in the same transaction.
+    const unlockedAchievements = await checkAchievements(connection, userId, gameSlug, rawScore, rawDuration)
+    if (isPersonalBest) {
+      await recordFriendActivity(connection, {
+        actorId: userId,
+        activityType: 'PERSONAL_BEST',
+        gameId,
+        scoreId: scoreResult.insertId,
+        sourceKey: `score:${scoreResult.insertId}`,
+      })
+    }
+    for (const achievement of unlockedAchievements) {
+      await recordFriendActivity(connection, {
+        actorId: userId,
+        activityType: 'ACHIEVEMENT_UNLOCKED',
+        achievementId: achievement.id,
+        sourceKey: `achievement:${achievement.id}`,
+      })
+    }
 
     await connection.commit()
 
-    // Return updated total score
+    // Return updated user stats
     const [users] = await pool.execute(
-      'SELECT total_score FROM users WHERE id = ? LIMIT 1',
+      'SELECT total_score, xp, level FROM users WHERE id = ? LIMIT 1',
       [userId],
     )
 
@@ -154,9 +209,40 @@ export async function submitScore({ userId, gameSlug, score, duration }) {
       score: rawScore,
       duration: rawDuration,
       newTotalScore: Number(users[0]?.total_score ?? 0),
+      xp: Number(users[0]?.xp ?? 0),
+      level: Number(users[0]?.level ?? 1),
+      questUpdates: questResult,
+      rankedUpdates: rankedResult,
     }
   } catch (error) {
     await connection.rollback()
+
+    if (error.code === 'ER_DUP_ENTRY' && String(error.message).includes('uq_scores_user_submission')) {
+      const [[existing]] = await pool.execute(
+        `SELECT s.id, s.game_id, s.score, s.duration, u.total_score, u.xp, u.level
+         FROM scores s
+         JOIN users u ON u.id = s.user_id
+         WHERE s.user_id = ? AND s.submission_key = ?
+         LIMIT 1`,
+        [userId, submissionKey],
+      )
+
+      if (existing && Number(existing.game_id) === Number(gameId)
+        && Number(existing.score) === rawScore
+        && Number(existing.duration) === Number(rawDuration.toFixed(3))) {
+        return {
+          scoreId: Number(existing.id),
+          score: rawScore,
+          duration: Number(existing.duration),
+          newTotalScore: Number(existing.total_score ?? 0),
+          xp: Number(existing.xp ?? 0),
+          level: Number(existing.level ?? 1),
+          duplicate: true,
+        }
+      }
+
+      throw httpError(409, 'This submission key was already used for a different score')
+    }
     throw error
   } finally {
     connection.release()
@@ -197,7 +283,7 @@ async function checkAchievements(connection, userId, gameSlug, score, durationSe
 
   // Get unearned achievements
   const [achievements] = await connection.execute(
-    `SELECT a.id, a.requirement_type, a.requirement_value
+    `SELECT a.id, a.name, a.requirement_type, a.requirement_value
      FROM achievements a
      WHERE a.id NOT IN (
        SELECT achievement_id FROM user_achievements WHERE user_id = ?
@@ -205,6 +291,7 @@ async function checkAchievements(connection, userId, gameSlug, score, durationSe
     [userId],
   )
 
+  const unlocked = []
   for (const achievement of achievements) {
     const check = checks.find((c) => c.type === achievement.requirement_type)
     if (!check) continue
@@ -214,10 +301,12 @@ async function checkAchievements(connection, userId, gameSlug, score, durationSe
       : check.value >= Number(achievement.requirement_value)
 
     if (earned) {
-      await connection.execute(
+      const [result] = await connection.execute(
         'INSERT IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?, ?)',
         [userId, achievement.id],
       )
+      if (result.affectedRows) unlocked.push({ id: Number(achievement.id), name: achievement.name })
     }
   }
+  return unlocked
 }

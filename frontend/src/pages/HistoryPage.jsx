@@ -6,7 +6,6 @@ import {
   Clock,
   Gamepad2,
   Grid2X2,
-  Loader2,
   RefreshCw,
   SlidersHorizontal,
   Trophy,
@@ -20,8 +19,8 @@ import { getHistory } from '../services/profileService.js'
 // ─── Constants ────────────────────────────────────────────────
 
 const CATEGORY_META = {
-  Reflex: { icon: Zap,      color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10' },
-  Puzzle: { icon: Grid2X2,  color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10' },
+  Reflex: { icon: Zap,      color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10' },
+  Puzzle: { icon: Grid2X2,  color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10' },
   Memory: { icon: Brain,    color: 'text-[#ef8b72]', bg: 'bg-[#ef8b72]/10' },
 }
 
@@ -77,7 +76,7 @@ function HistoryRow({ entry }) {
       {/* Score */}
       <div className="shrink-0 text-right sm:w-28">
         <p className="flex items-center justify-end gap-1 text-sm font-semibold tabular-nums">
-          <Trophy aria-hidden="true" className="size-3.5 text-[#c8f169]" />
+          <Trophy aria-hidden="true" className="size-3.5 text-[#8b8bff]" />
           {entry.score.toLocaleString('id-ID')}
         </p>
         <p className="text-[10px] text-white/25">pts</p>
@@ -137,7 +136,7 @@ function FilterPanel({ filters, games, onChange, onReset }) {
     || filters.minScore || filters.maxScore || filters.dateFrom || filters.dateTo
 
   return (
-    <aside className="border border-white/[0.08] bg-[#171b19] p-5">
+    <aside className="border border-white/[0.08] bg-[#171a2b] p-5">
       <div className="flex items-center justify-between">
         <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/40">
           <SlidersHorizontal className="size-3.5" /> Filters
@@ -157,7 +156,7 @@ function FilterPanel({ filters, games, onChange, onReset }) {
             id="filter-sort"
             value={filters.sort}
             onChange={(e) => onChange('sort', e.target.value)}
-            className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111512] px-3 text-sm text-white outline-none focus:border-[#c8f169]/40"
+            className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111323] px-3 text-sm text-white outline-none focus:border-[#8b8bff]/40"
           >
             {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
@@ -170,7 +169,7 @@ function FilterPanel({ filters, games, onChange, onReset }) {
             id="filter-game"
             value={filters.gameSlug}
             onChange={(e) => onChange('gameSlug', e.target.value)}
-            className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111512] px-3 text-sm text-white outline-none focus:border-[#c8f169]/40"
+            className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111323] px-3 text-sm text-white outline-none focus:border-[#8b8bff]/40"
           >
             <option value="">All games</option>
             {games.map((g) => (
@@ -183,12 +182,12 @@ function FilterPanel({ filters, games, onChange, onReset }) {
         <div>
           <p className="mb-1.5 text-xs font-medium text-white/40">Score range</p>
           <div className="flex gap-2">
-            <input type="number" placeholder="Min" value={filters.minScore}
+            <input type="number" aria-label="Minimum score" placeholder="Min" value={filters.minScore}
               onChange={(e) => onChange('minScore', e.target.value || null)}
-              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111512] px-3 text-sm text-white outline-none focus:border-[#c8f169]/40 placeholder-white/20" />
-            <input type="number" placeholder="Max" value={filters.maxScore}
+              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111323] px-3 text-sm text-white outline-none focus:border-[#8b8bff]/40 placeholder-white/20" />
+            <input type="number" aria-label="Maximum score" placeholder="Max" value={filters.maxScore}
               onChange={(e) => onChange('maxScore', e.target.value || null)}
-              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111512] px-3 text-sm text-white outline-none focus:border-[#c8f169]/40 placeholder-white/20" />
+              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111323] px-3 text-sm text-white outline-none focus:border-[#8b8bff]/40 placeholder-white/20" />
           </div>
         </div>
 
@@ -196,12 +195,12 @@ function FilterPanel({ filters, games, onChange, onReset }) {
         <div>
           <p className="mb-1.5 text-xs font-medium text-white/40">Date range</p>
           <div className="flex flex-col gap-2">
-            <input type="date" value={filters.dateFrom}
+            <input type="date" aria-label="From date" value={filters.dateFrom}
               onChange={(e) => onChange('dateFrom', e.target.value || null)}
-              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111512] px-3 text-sm text-white/70 outline-none focus:border-[#c8f169]/40 [color-scheme:dark]" />
-            <input type="date" value={filters.dateTo}
+              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111323] px-3 text-sm text-white/70 outline-none focus:border-[#8b8bff]/40 [color-scheme:dark]" />
+            <input type="date" aria-label="To date" value={filters.dateTo}
               onChange={(e) => onChange('dateTo', e.target.value || null)}
-              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111512] px-3 text-sm text-white/70 outline-none focus:border-[#c8f169]/40 [color-scheme:dark]" />
+              className="h-9 w-full rounded-lg border border-white/[0.08] bg-[#111323] px-3 text-sm text-white/70 outline-none focus:border-[#8b8bff]/40 [color-scheme:dark]" />
           </div>
         </div>
       </div>
@@ -260,7 +259,7 @@ export default function HistoryPage() {
   return (
     <DashboardLayout>
       <header className="animate-rise">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#c8f169]">Game Sessions</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8b8bff]">Game Sessions</p>
         <div className="mt-2 flex items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-semibold sm:text-4xl">History</h1>
@@ -286,7 +285,7 @@ export default function HistoryPage() {
         {/* Table */}
         <div className="min-w-0 flex-1">
           {/* Column headers */}
-          <div className="hidden border border-b-0 border-white/[0.08] bg-[#171b19] px-5 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white/25 sm:flex sm:items-center sm:gap-4">
+          <div className="hidden border border-b-0 border-white/[0.08] bg-[#171a2b] px-5 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-white/25 sm:flex sm:items-center sm:gap-4">
             <div className="size-9 shrink-0" />
             <div className="flex-1">Game</div>
             <div className="w-28 text-right">Score</div>
@@ -294,7 +293,7 @@ export default function HistoryPage() {
             <div className="w-28 text-right">Date</div>
           </div>
 
-          <div className="border border-white/[0.08] bg-[#0f1311]">
+          <div className="border border-white/[0.08] bg-[#0f1120]">
             {loading && (
               <div aria-live="polite" aria-label="Loading history">
                 {[...Array(8)].map((_, i) => <SkeletonRow key={i} />)}

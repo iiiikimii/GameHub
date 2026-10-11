@@ -51,10 +51,11 @@ export default function AdminScores() {
   return (
     <AdminLayout title="Scores" subtitle="View and manage player scores">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="flex w-full max-w-sm items-center gap-2 rounded-lg border border-white/10 bg-[#111512] px-3 py-2 focus-within:border-[#c8f169]/50">
+        <div className="flex w-full max-w-sm items-center gap-2 rounded-lg border border-white/10 bg-[#111323] px-3 py-2 focus-within:border-[#8b8bff]/50">
           <Search className="size-4 text-white/40" />
           <input
             type="text"
+            aria-label="Search scores by username"
             placeholder="Search username..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
@@ -63,18 +64,20 @@ export default function AdminScores() {
         </div>
         
         <select 
+          aria-label="Filter scores by game"
           value={game} 
           onChange={e => { setGame(e.target.value); setPage(1) }}
-          className="rounded-lg border border-white/10 bg-[#111512] px-3 py-2 text-sm text-white outline-none focus:border-[#c8f169]/50"
+          className="rounded-lg border border-white/10 bg-[#111323] px-3 py-2 text-sm text-white outline-none focus:border-[#8b8bff]/50"
         >
           <option value="">All Games</option>
           {games.map(g => <option key={g.slug} value={g.slug}>{g.name}</option>)}
         </select>
         
         <select 
+          aria-label="Sort scores"
           value={sort} 
           onChange={e => { setSort(e.target.value); setPage(1) }}
-          className="rounded-lg border border-white/10 bg-[#111512] px-3 py-2 text-sm text-white outline-none focus:border-[#c8f169]/50"
+          className="rounded-lg border border-white/10 bg-[#111323] px-3 py-2 text-sm text-white outline-none focus:border-[#8b8bff]/50"
         >
           <option value="date_desc">Newest First</option>
           <option value="date_asc">Oldest First</option>
@@ -83,7 +86,7 @@ export default function AdminScores() {
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-white/[0.08] bg-[#171b19]">
+      <div className="overflow-x-auto rounded-lg border border-white/[0.08] bg-[#171a2b]">
         <table className="w-full text-left text-sm text-white/70">
           <thead className="border-b border-white/[0.08] bg-white/[0.02] text-xs font-semibold text-white/50 uppercase">
             <tr>
@@ -105,7 +108,7 @@ export default function AdminScores() {
                 <tr key={s.id} className="transition hover:bg-white/[0.02]">
                   <td className="px-4 py-3 font-medium text-white">{s.user.username}</td>
                   <td className="px-4 py-3 text-xs text-white/60">{s.game.name}</td>
-                  <td className="px-4 py-3 font-bold text-[#c8f169]">{s.score.toLocaleString()}</td>
+                  <td className="px-4 py-3 font-bold text-[#8b8bff]">{s.score.toLocaleString()}</td>
                   <td className="px-4 py-3 text-xs">{s.duration.toFixed(1)}s</td>
                   <td className="px-4 py-3 text-xs">{new Date(s.createdAt).toLocaleString('id-ID')}</td>
                   <td className="px-4 py-3 text-right">

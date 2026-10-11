@@ -1,12 +1,12 @@
 import { ArrowLeft, CheckCircle2, Grid2X2, Loader2, RefreshCw, Send, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { submitScore } from '../../services/gameService.js'
+import { getScoreSubmissionError, submitScore } from '../../services/gameService.js'
 import { calculateNumberRushScore, generateGrid, GRID_SIZE, TOTAL_TIME } from './utils.js'
 
 const GAME_SLUG = 'number-rush'
 
-export default function NumberRush() {
+export default function NumberRush({ offlinePractice = false } = {}) {
   const [phase, setPhase] = useState('idle')  // idle | playing | finished | submitting | submitted
   const [grid, setGrid] = useState([])
   const [nextExpected, setNextExpected] = useState(1)
@@ -21,6 +21,7 @@ export default function NumberRush() {
 
   const timerRef = useRef(null)
   const startTimeRef = useRef(null)
+  const submissionKeyRef = useRef(null)
 
   const stopTimer = () => {
     if (timerRef.current) {
@@ -31,6 +32,7 @@ export default function NumberRush() {
 
   const startGame = useCallback(() => {
     stopTimer()
+    submissionKeyRef.current = crypto.randomUUID()
     const newGrid = generateGrid(GRID_SIZE)
     setGrid(newGrid)
     setNextExpected(1)
@@ -96,7 +98,6 @@ export default function NumberRush() {
           wrong,
           timeLeft,
           totalTime: TOTAL_TIME,
-          gridSize: GRID_SIZE,
         })
         setScore(s)
       } else {
@@ -111,7 +112,6 @@ export default function NumberRush() {
           wrong: newWrong,
           timeLeft,
           totalTime: TOTAL_TIME,
-          gridSize: GRID_SIZE,
         })
         setScore(s)
       }
@@ -127,11 +127,12 @@ export default function NumberRush() {
         gameSlug: GAME_SLUG,
         score,
         duration: elapsedDuration,
+        submissionKey: submissionKeyRef.current,
       })
       setNewTotal(result.newTotalScore)
       setPhase('submitted')
     } catch (err) {
-      setSubmitError(err.response?.data?.message ?? 'Gagal mengirim skor.')
+      setSubmitError(getScoreSubmissionError(err))
       setPhase('finished')
     }
   }, [score, elapsedDuration])
@@ -139,13 +140,13 @@ export default function NumberRush() {
   useEffect(() => () => stopTimer(), [])
 
   // Timer color
-  const timerColor = timeLeft > 10 ? 'text-[#c8f169]' : timeLeft > 5 ? 'text-[#ef8b72]' : 'text-red-400 animate-pulse'
+  const timerColor = timeLeft > 10 ? 'text-[#8b8bff]' : timeLeft > 5 ? 'text-[#ef8b72]' : 'text-red-400 animate-pulse'
 
   // ── Phase: idle ──
   if (phase === 'idle') {
     return (
       <GameShell>
-        <span className="grid size-20 place-items-center rounded-full bg-[#8fd2dd]/10 text-[#8fd2dd]">
+        <span className="grid size-20 place-items-center rounded-full bg-[#7dd3fc]/10 text-[#7dd3fc]">
           <Grid2X2 className="size-9" />
         </span>
         <h2 className="mt-6 text-2xl font-semibold">Number Rush</h2>
@@ -153,22 +154,22 @@ export default function NumberRush() {
           Numbers will appear in a 3×3 grid. Click them in ascending order (1, 2, 3…) before time runs out!
         </p>
         <div className="mt-5 grid grid-cols-3 gap-2 text-sm text-white/40">
-          <div className="border border-white/[0.08] bg-[#1a1f1d] p-3 text-center">
-            <p className="text-[#8fd2dd] font-semibold">+80</p>
+          <div className="border border-white/[0.08] bg-[#1b1d32] p-3 text-center">
+            <p className="text-[#7dd3fc] font-semibold">+80</p>
             <p className="text-xs mt-1">Per correct</p>
           </div>
-          <div className="border border-white/[0.08] bg-[#1a1f1d] p-3 text-center">
+          <div className="border border-white/[0.08] bg-[#1b1d32] p-3 text-center">
             <p className="text-[#ef8b72] font-semibold">-40</p>
             <p className="text-xs mt-1">Per wrong</p>
           </div>
-          <div className="border border-white/[0.08] bg-[#1a1f1d] p-3 text-center">
+          <div className="border border-white/[0.08] bg-[#1b1d32] p-3 text-center">
             <p className="text-white font-semibold">{TOTAL_TIME}s</p>
             <p className="text-xs mt-1">Time limit</p>
           </div>
         </div>
         <button
           onClick={startGame}
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#8fd2dd] px-8 py-3.5 font-semibold text-[#0f1f22] transition hover:bg-[#a8e0e9] hover:-translate-y-0.5"
+          className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#7dd3fc] px-8 py-3.5 font-semibold text-[#0f1f22] transition hover:bg-[#a8e0e9] hover:-translate-y-0.5"
         >
           Start Game
         </button>
@@ -184,7 +185,7 @@ export default function NumberRush() {
         <div className="flex w-full max-w-sm items-center justify-between gap-4">
           <div className="text-center">
             <p className="text-[10px] font-semibold uppercase text-white/35">Next</p>
-            <p className="text-2xl font-bold text-[#8fd2dd]">{nextExpected}</p>
+            <p className="text-2xl font-bold text-[#7dd3fc]">{nextExpected}</p>
           </div>
           <div className="text-center">
             <p className={`text-4xl font-bold tabular-nums ${timerColor}`}>{timeLeft}</p>
@@ -192,21 +193,21 @@ export default function NumberRush() {
           </div>
           <div className="text-center">
             <p className="text-[10px] font-semibold uppercase text-white/35">Score</p>
-            <p className="text-2xl font-bold text-[#c8f169]">{score.toLocaleString('id-ID')}</p>
+            <p className="text-2xl font-bold text-[#8b8bff]">{score.toLocaleString('id-ID')}</p>
           </div>
         </div>
 
         {/* Timer bar */}
         <div className="h-1.5 w-full max-w-sm overflow-hidden rounded-full bg-white/8">
           <div
-            className="h-full rounded-full bg-[#8fd2dd] transition-[width] duration-1000 ease-linear"
+            className="h-full rounded-full bg-[#7dd3fc] transition-[width] duration-1000 ease-linear"
             style={{ width: `${(timeLeft / TOTAL_TIME) * 100}%` }}
           />
         </div>
 
         {/* Stats pills */}
         <div className="flex gap-3 text-sm">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#c8f169]/8 px-3 py-1 text-[#c8f169]">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#8b8bff]/8 px-3 py-1 text-[#8b8bff]">
             <CheckCircle2 className="size-3.5" /> {correct}
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ef8b72]/8 px-3 py-1 text-[#ef8b72]">
@@ -220,15 +221,15 @@ export default function NumberRush() {
             const isFlash = flashCell?.index === index
             const flashStyle = isFlash
               ? flashCell.type === 'correct'
-                ? 'border-[#c8f169]/60 bg-[#c8f169]/15 scale-95'
+                ? 'border-[#8b8bff]/60 bg-[#8b8bff]/15 scale-95'
                 : 'border-[#ef8b72]/60 bg-[#ef8b72]/12 scale-95'
-              : 'border-white/[0.08] bg-[#1a1f1d] hover:border-[#8fd2dd]/30 hover:bg-[#8fd2dd]/5'
+              : 'border-white/[0.08] bg-[#1b1d32] hover:border-[#7dd3fc]/30 hover:bg-[#7dd3fc]/5'
 
             return (
               <button
                 key={`${index}-${num}`}
                 onClick={() => handleCellClick(num, index)}
-                className={`flex h-[88px] items-center justify-center border text-3xl font-bold text-white transition duration-150 ${flashStyle}`}
+                className={`flex h-[72px] touch-manipulation select-none items-center justify-center border text-3xl font-bold text-white transition duration-150 sm:h-[88px] ${flashStyle}`}
                 aria-label={`Number ${num}`}
               >
                 {num}
@@ -248,24 +249,25 @@ export default function NumberRush() {
 
     return (
       <GameShell>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#8fd2dd]">Game Over</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#7dd3fc]">Game Over</p>
         <h2 className="mt-3 text-3xl font-semibold">Time's Up!</h2>
 
         <div className="mt-7 grid grid-cols-3 gap-3 w-full max-w-sm">
-          <StatBox label="Score" value={score.toLocaleString('id-ID')} color="text-[#c8f169]" />
-          <StatBox label="Correct" value={correct} color="text-[#8fd2dd]" />
+          <StatBox label="Score" value={score.toLocaleString('id-ID')} color="text-[#8b8bff]" />
+          <StatBox label="Correct" value={correct} color="text-[#7dd3fc]" />
           <StatBox label="Accuracy" value={`${accuracy}%`} color="text-white/70" />
         </div>
 
-        {submitError && <p className="mt-4 text-sm text-[#ef8b72]">{submitError}</p>}
+        {!offlinePractice && submitError && <p className="mt-4 text-sm text-[#ef8b72]">{submitError}</p>}
+        {offlinePractice && <p className="mt-4 text-xs text-white/40">Mode latihan: skor ini tidak disimpan ke akun.</p>}
 
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <button
+          {!offlinePractice && <button
             onClick={handleSubmit}
-            className="inline-flex items-center gap-2 rounded-full bg-[#8fd2dd] px-6 py-3 text-sm font-semibold text-[#0f1f22] transition hover:bg-[#a8e0e9] hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 rounded-full bg-[#7dd3fc] px-6 py-3 text-sm font-semibold text-[#0f1f22] transition hover:bg-[#a8e0e9] hover:-translate-y-0.5"
           >
             <Send className="size-4" /> Submit Score
-          </button>
+          </button>}
           <button
             onClick={startGame}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
@@ -281,7 +283,7 @@ export default function NumberRush() {
   if (phase === 'submitting') {
     return (
       <GameShell>
-        <Loader2 className="size-10 animate-spin text-[#8fd2dd]" />
+        <Loader2 className="size-10 animate-spin text-[#7dd3fc]" />
         <p className="mt-4 text-sm text-white/50">Submitting score…</p>
       </GameShell>
     )
@@ -291,15 +293,15 @@ export default function NumberRush() {
   if (phase === 'submitted') {
     return (
       <GameShell>
-        <CheckCircle2 className="size-14 text-[#8fd2dd]" />
+        <CheckCircle2 className="size-14 text-[#7dd3fc]" />
         <h2 className="mt-4 text-2xl font-semibold">Score Saved!</h2>
         <div className="mt-5 flex items-center gap-3">
-          <div className="border border-[#8fd2dd]/20 bg-[#8fd2dd]/5 px-5 py-3 text-center">
+          <div className="border border-[#7dd3fc]/20 bg-[#7dd3fc]/5 px-5 py-3 text-center">
             <p className="text-xs text-white/40">Score earned</p>
-            <p className="text-2xl font-semibold text-[#8fd2dd]">{score.toLocaleString('id-ID')}</p>
+            <p className="text-2xl font-semibold text-[#7dd3fc]">{score.toLocaleString('id-ID')}</p>
           </div>
           {newTotal !== null && (
-            <div className="border border-white/[0.08] bg-[#1a1f1d] px-5 py-3 text-center">
+            <div className="border border-white/[0.08] bg-[#1b1d32] px-5 py-3 text-center">
               <p className="text-xs text-white/40">Total score</p>
               <p className="text-2xl font-semibold">{newTotal.toLocaleString('id-ID')}</p>
             </div>
@@ -308,7 +310,7 @@ export default function NumberRush() {
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <button
             onClick={startGame}
-            className="inline-flex items-center gap-2 rounded-full bg-[#8fd2dd] px-6 py-3 text-sm font-semibold text-[#0f1f22] transition hover:bg-[#a8e0e9]"
+            className="inline-flex items-center gap-2 rounded-full bg-[#7dd3fc] px-6 py-3 text-sm font-semibold text-[#0f1f22] transition hover:bg-[#a8e0e9]"
           >
             <RefreshCw className="size-4" /> Play Again
           </button>
@@ -336,7 +338,7 @@ function GameShell({ children }) {
 
 function StatBox({ label, value, color }) {
   return (
-    <div className="border border-white/[0.08] bg-[#1a1f1d] p-4 text-center">
+    <div className="border border-white/[0.08] bg-[#1b1d32] p-4 text-center">
       <p className="text-xs text-white/40">{label}</p>
       <p className={`mt-1 text-2xl font-semibold ${color}`}>{value}</p>
     </div>

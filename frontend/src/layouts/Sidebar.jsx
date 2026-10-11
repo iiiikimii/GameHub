@@ -1,26 +1,37 @@
 import {
   Award,
+  BarChart2,
+  Crown,
+  Compass,
   Gamepad2,
   History,
   LayoutDashboard,
   LogOut,
   Settings,
   ShieldCheck,
+  Swords,
   Target,
   Trophy,
   UserRound,
+  UsersRound,
   X,
 } from 'lucide-react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 
 const playerItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { label: 'Games', to: '/games', icon: Gamepad2 },
-  { label: 'Leaderboard', to: '/leaderboard', icon: Trophy },
+  { label: 'Dashboard',  to: '/dashboard',  icon: LayoutDashboard },
+  { label: 'Games',      to: '/games',      icon: Gamepad2 },
+  { label: 'Ranked',     to: '/ranked',     icon: Swords },
+  { label: 'Quests',     to: '/quests',     icon: Compass },
+  { label: 'Leaderboard',to: '/leaderboard',icon: Trophy },
   { label: 'Challenges', to: '/challenges', icon: Target },
-  { label: 'Achievements', to: '/achievements', icon: Award },
-  { label: 'History', to: '/history', icon: History },
+  { label: 'Achievements',to: '/achievements',icon: Award },
+  { label: 'History',   to: '/history',    icon: History },
+  { label: 'Analytics', to: '/analytics',  icon: BarChart2 },
+  { label: 'Friends', to: '/friends', icon: UsersRound },
+  { label: 'Chess', to: '/chess', icon: Crown },
+  { label: 'Activity Feed', to: '/activity', icon: History },
 ]
 
 const accountItems = [
@@ -29,7 +40,8 @@ const accountItems = [
 ]
 
 const adminItems = [
-  { label: 'Admin', to: '/admin', icon: ShieldCheck },
+  { label: 'Admin',      to: '/admin',           icon: ShieldCheck },
+  { label: 'Analytics',  to: '/admin/analytics', icon: BarChart2 },
 ]
 
 function NavItem({ to, icon: Icon, label, onClick, end = false }) {
@@ -41,7 +53,7 @@ function NavItem({ to, icon: Icon, label, onClick, end = false }) {
       className={({ isActive }) =>
         `relative flex h-10 items-center gap-3 rounded-lg px-3 text-sm transition-all duration-150 ${
           isActive
-            ? 'bg-[#c8f169]/10 font-semibold text-[#c8f169]'
+            ? 'bg-[#8b8bff]/10 font-semibold text-[#8b8bff]'
             : 'text-white/48 hover:bg-white/[0.04] hover:text-white/80'
         }`
       }
@@ -49,7 +61,7 @@ function NavItem({ to, icon: Icon, label, onClick, end = false }) {
       {({ isActive }) => (
         <>
           {isActive && <span className="nav-active-indicator" aria-hidden="true" />}
-          <Icon aria-hidden="true" className={`size-[17px] shrink-0 ${isActive ? 'text-[#c8f169]' : ''}`} />
+          <Icon aria-hidden="true" className={`size-[17px] shrink-0 ${isActive ? 'text-[#8b8bff]' : ''}`} />
           {label}
         </>
       )}
@@ -80,8 +92,8 @@ export default function Sidebar({ isOpen, onClose }) {
     <>
       {/* Sidebar panel */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-[252px] flex-col border-r border-white/[0.08] bg-[#0f1311] transition-transform duration-300 ease-out md:translate-x-0 ${
-          isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 z-40 flex w-[252px] flex-col border-r border-white/[0.08] bg-[#111318] transition-transform duration-300 ease-out md:translate-x-0 ${
+          isOpen ? 'translate-x-0 shadow-xl shadow-black/25' : '-translate-x-full'
         }`}
       >
         {/* Logo */}
@@ -92,7 +104,7 @@ export default function Sidebar({ isOpen, onClose }) {
             className="inline-flex items-center gap-3"
             aria-label="GameHub — Kembali ke dashboard"
           >
-            <span className="grid size-8 place-items-center rounded-lg bg-[#c8f169] text-[#172015] shadow-[0_0_12px_rgba(200,241,105,0.3)]">
+            <span className="grid size-8 place-items-center rounded-md bg-[#8b8bff] text-[#172015]">
               <Gamepad2 className="size-4" aria-hidden="true" />
             </span>
             <span className="text-sm font-bold tracking-wide">GAMEHUB</span>
@@ -143,8 +155,8 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* User footer */}
         <div className="shrink-0 border-t border-white/[0.08] p-4">
           {/* User info */}
-          <div className="mb-3 flex min-w-0 items-center gap-3 rounded-lg bg-white/[0.03] p-2">
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#c8f169]/15 text-[11px] font-bold text-[#c8f169]">
+          <div className="mb-3 flex min-w-0 items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.025] p-2">
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#8b8bff]/15 text-[11px] font-bold text-[#8b8bff]">
               {initials}
             </span>
             <div className="min-w-0">

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import pool from '../config/database.js'
 
-const publicUserFields = 'id, username, email, avatar, role, total_score, created_at, updated_at'
+const publicUserFields = 'id, username, email, avatar, role, is_active, total_score, created_at, updated_at'
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const usernamePattern = /^[A-Za-z0-9_]{3,50}$/
 
@@ -104,6 +104,10 @@ export async function loginUser(input = {}) {
 
   if (!user?.password_hash || !(await bcrypt.compare(password, user.password_hash))) {
     throw httpError(401, 'Invalid username/email or password')
+  }
+
+  if (!user.is_active) {
+    throw httpError(403, 'This account is disabled')
   }
 
   const { password_hash: _passwordHash, ...publicUser } = user

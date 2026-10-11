@@ -1,13 +1,13 @@
 import { ArrowLeft, Brain, CheckCircle2, Loader2, RefreshCw, Send } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { submitScore } from '../../services/gameService.js'
+import { getScoreSubmissionError, submitScore } from '../../services/gameService.js'
 import { calculateMemoryScore, DIFFICULTIES, generateCards } from './utils.js'
 
 const GAME_SLUG = 'memory-match'
 const FLIP_DELAY = 900  // ms before mismatched cards flip back
 
-export default function MemoryMatch() {
+export default function MemoryMatch({ offlinePractice = false } = {}) {
   const [phase, setPhase] = useState('select')   // select | playing | finished | submitting | submitted
   const [difficulty, setDifficulty] = useState(null)
   const [cards, setCards] = useState([])
@@ -22,6 +22,7 @@ export default function MemoryMatch() {
 
   const timerRef = useRef(null)
   const timerValue = useRef(0)
+  const submissionKeyRef = useRef(null)
 
   const startTimer = () => {
     timerValue.current = 0
@@ -41,6 +42,7 @@ export default function MemoryMatch() {
 
   const startGame = useCallback((diff) => {
     stopTimer()
+    submissionKeyRef.current = crypto.randomUUID()
     const config = DIFFICULTIES[diff]
     const newCards = generateCards(config.pairs)
     setDifficulty(diff)
@@ -82,6 +84,7 @@ export default function MemoryMatch() {
           // Check win condition
           if (newMatched.size === cards.length) {
             stopTimer()
+            setTimer(timerValue.current)
             const config = DIFFICULTIES[difficulty]
             const finalScore = calculateMemoryScore({
               pairs: config.pairs,
@@ -113,11 +116,12 @@ export default function MemoryMatch() {
         gameSlug: GAME_SLUG,
         score,
         duration: timerValue.current,
+        submissionKey: submissionKeyRef.current,
       })
       setNewTotal(result.newTotalScore)
       setPhase('submitted')
     } catch (err) {
-      setSubmitError(err.response?.data?.message ?? 'Gagal mengirim skor.')
+      setSubmitError(getScoreSubmissionError(err))
       setPhase('finished')
     }
   }, [score])
@@ -143,15 +147,15 @@ export default function MemoryMatch() {
             <button
               key={key}
               onClick={() => startGame(key)}
-              className="group flex items-center justify-between border border-white/[0.08] bg-[#1a1f1d] px-5 py-4 text-left transition duration-200 hover:border-[#ef8b72]/30 hover:bg-[#ef8b72]/5"
+              className="group flex items-center justify-between border border-white/[0.08] bg-[#1b1d32] px-5 py-4 text-left transition duration-200 hover:border-[#ef8b72]/30 hover:bg-[#ef8b72]/5"
             >
               <div>
                 <p className="font-semibold text-white">{diff.label}</p>
                 <p className="mt-0.5 text-xs text-white/40">{diff.description}</p>
               </div>
               <span className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                key === 'easy' ? 'bg-[#c8f169]/10 text-[#c8f169] group-hover:bg-[#c8f169]/20' :
-                key === 'medium' ? 'bg-[#8fd2dd]/10 text-[#8fd2dd] group-hover:bg-[#8fd2dd]/20' :
+                key === 'easy' ? 'bg-[#8b8bff]/10 text-[#8b8bff] group-hover:bg-[#8b8bff]/20' :
+                key === 'medium' ? 'bg-[#7dd3fc]/10 text-[#7dd3fc] group-hover:bg-[#7dd3fc]/20' :
                 'bg-[#ef8b72]/10 text-[#ef8b72] group-hover:bg-[#ef8b72]/20'
               }`}>
                 {diff.label}
@@ -214,12 +218,12 @@ export default function MemoryMatch() {
                 onClick={() => handleCardClick(card.id)}
                 disabled={isMatched || locked}
                 aria-label={isFlipped ? `Card: ${card.value}` : 'Hidden card'}
-                className={`relative aspect-square flex items-center justify-center border text-3xl transition duration-200
+                className={`relative aspect-square min-h-12 touch-manipulation select-none flex items-center justify-center border text-3xl transition duration-200
                   ${isMatched
                     ? 'border-[#ef8b72]/30 bg-[#ef8b72]/8 cursor-default'
                     : isFlipped
-                    ? 'border-white/20 bg-[#242b27] scale-95'
-                    : 'border-white/[0.08] bg-[#1a1f1d] hover:border-white/18 hover:bg-[#1e2420] cursor-pointer'
+                    ? 'border-white/20 bg-[#242840] scale-95'
+                    : 'border-white/[0.08] bg-[#1b1d32] hover:border-white/18 hover:bg-[#1e2420] cursor-pointer'
                   }`}
               >
                 {isFlipped ? (
@@ -254,20 +258,21 @@ export default function MemoryMatch() {
         <h2 className="mt-3 text-3xl font-semibold">You matched them all! 🎉</h2>
 
         <div className="mt-7 grid grid-cols-3 gap-3 w-full max-w-sm">
-          <StatBox label="Score" value={score.toLocaleString('id-ID')} color="text-[#c8f169]" />
+          <StatBox label="Score" value={score.toLocaleString('id-ID')} color="text-[#8b8bff]" />
           <StatBox label="Moves" value={moves} color="text-[#ef8b72]" />
-          <StatBox label="Time" value={formatTime(timerValue.current)} color="text-[#8fd2dd]" />
+          <StatBox label="Time" value={formatTime(timer)} color="text-[#7dd3fc]" />
         </div>
 
-        {submitError && <p className="mt-4 text-sm text-[#ef8b72]">{submitError}</p>}
+        {!offlinePractice && submitError && <p className="mt-4 text-sm text-[#ef8b72]">{submitError}</p>}
+        {offlinePractice && <p className="mt-4 text-xs text-white/40">Mode latihan: skor ini tidak disimpan ke akun.</p>}
 
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <button
+          {!offlinePractice && <button
             onClick={handleSubmit}
             className="inline-flex items-center gap-2 rounded-full bg-[#ef8b72] px-6 py-3 text-sm font-semibold text-[#1a0c07] transition hover:bg-[#f5a289] hover:-translate-y-0.5"
           >
             <Send className="size-4" /> Submit Score
-          </button>
+          </button>}
           <button
             onClick={() => startGame(difficulty)}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
@@ -310,7 +315,7 @@ export default function MemoryMatch() {
             <p className="text-2xl font-semibold text-[#ef8b72]">{score.toLocaleString('id-ID')}</p>
           </div>
           {newTotal !== null && (
-            <div className="border border-white/[0.08] bg-[#1a1f1d] px-5 py-3 text-center">
+            <div className="border border-white/[0.08] bg-[#1b1d32] px-5 py-3 text-center">
               <p className="text-xs text-white/40">Total score</p>
               <p className="text-2xl font-semibold">{newTotal.toLocaleString('id-ID')}</p>
             </div>
@@ -353,7 +358,7 @@ function GameShell({ children }) {
 
 function StatBox({ label, value, color }) {
   return (
-    <div className="border border-white/[0.08] bg-[#1a1f1d] p-4 text-center">
+    <div className="border border-white/[0.08] bg-[#1b1d32] p-4 text-center">
       <p className="text-xs text-white/40">{label}</p>
       <p className={`mt-1 text-2xl font-semibold ${color}`}>{value}</p>
     </div>

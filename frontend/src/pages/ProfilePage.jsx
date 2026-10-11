@@ -1,7 +1,6 @@
 import {
   Award,
   Brain,
-  CheckCircle2,
   ChevronDown,
   Edit3,
   Eye,
@@ -12,20 +11,20 @@ import {
   Lock,
   Save,
   Trophy,
-  User,
   X,
   Zap,
 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import DashboardLayout from '../layouts/DashboardLayout.jsx'
 import { useAuth } from '../hooks/useAuth.js'
+import { apiErrorMessage } from '../services/apiErrorMessage.js'
 import { getProfile, updateProfile } from '../services/profileService.js'
 
 // ─── Constants ────────────────────────────────────────────────
 
 const CATEGORY_META = {
-  Reflex: { icon: Zap,      color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10' },
-  Puzzle: { icon: Grid2X2,  color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10' },
+  Reflex: { icon: Zap,      color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10' },
+  Puzzle: { icon: Grid2X2,  color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10' },
   Memory: { icon: Brain,    color: 'text-[#ef8b72]', bg: 'bg-[#ef8b72]/10' },
 }
 
@@ -33,13 +32,19 @@ const AVATAR_PRESETS = ['🎮', '🕹️', '⚡', '🧠', '🏆', '🌟', '🔥'
 
 // ─── Avatar display ──────────────────────────────────────────
 
-function AvatarDisplay({ avatar, username, size = 'xl' }) {
+function AvatarDisplay({ avatar, username, frame, size = 'xl' }) {
   const sizeClass = { sm: 'size-10 text-base', md: 'size-14 text-xl', xl: 'size-24 text-4xl' }[size]
   const content = avatar || (username ?? '?').slice(0, 2).toUpperCase()
-  const isEmoji = avatar && [...avatar].length === 1 && avatar.codePointAt(0) > 127
+
+  const frameClass =
+    frame === 'frame_cyber_lime'
+      ? 'border-2 border-[#8b8bff] shadow-[0_0_16px_rgba(139, 139, 255,0.4)]'
+      : frame === 'frame_genesis_gold'
+      ? 'border-2 border-amber-400 shadow-[0_0_16px_rgba(251,191,36,0.4)]'
+      : 'border border-white/10'
 
   return (
-    <span className={`inline-flex shrink-0 items-center justify-center rounded-full bg-[#c8f169]/12 font-bold text-[#c8f169] ${sizeClass}`}>
+    <span className={`inline-flex shrink-0 items-center justify-center rounded-2xl bg-[#8b8bff]/12 font-bold text-[#8b8bff] ${frameClass} ${sizeClass}`}>
       {content}
     </span>
   )
@@ -47,9 +52,9 @@ function AvatarDisplay({ avatar, username, size = 'xl' }) {
 
 // ─── Stat card ────────────────────────────────────────────────
 
-function StatItem({ label, value, sub, icon: Icon, color = 'text-[#c8f169]' }) {
+function StatItem({ label, value, sub, icon: Icon, color = 'text-[#8b8bff]' }) {
   return (
-    <div className="border border-white/[0.07] bg-[#171b19] p-4">
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-[#191c31] to-[#131526] p-4 shadow-lg shadow-black/10">
       <div className="flex items-center gap-2 text-white/35">
         <Icon className="size-3.5" aria-hidden="true" />
         <span className="text-[10px] font-semibold uppercase tracking-widest">{label}</span>
@@ -76,10 +81,10 @@ function Field({ label, id, type = 'text', value, onChange, placeholder, error, 
           onChange={onChange}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`h-10 w-full rounded-lg border bg-[#111512] px-3.5 text-sm text-white placeholder-white/20 outline-none transition
+          className={`h-10 w-full rounded-lg border bg-[#111323] px-3.5 text-sm text-white placeholder-white/20 outline-none transition
             focus:ring-1 ${error
               ? 'border-[#ef8b72]/50 focus:border-[#ef8b72]/70 focus:ring-[#ef8b72]/20'
-              : 'border-white/[0.08] focus:border-[#c8f169]/40 focus:ring-[#c8f169]/20'
+              : 'border-white/[0.08] focus:border-[#8b8bff]/40 focus:ring-[#8b8bff]/20'
             } ${rightEl ? 'pr-10' : ''}`}
         />
         {rightEl && (
@@ -169,7 +174,7 @@ function EditModal({ profile, onClose, onSaved }) {
       onSaved(updated)
       onClose()
     } catch (err) {
-      setApiError(err.response?.data?.message ?? 'Failed to save profile.')
+      setApiError(apiErrorMessage(err, 'Profil belum berhasil disimpan. Periksa data lalu coba lagi.'))
     } finally {
       setSaving(false)
     }
@@ -183,7 +188,7 @@ function EditModal({ profile, onClose, onSaved }) {
       aria-modal="true"
       aria-label="Edit profile"
     >
-      <div className="w-full max-w-md border border-white/10 bg-[#171b19] shadow-2xl">
+      <div className="w-full max-w-md border border-white/10 bg-[#171a2b] shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-4">
           <h2 className="font-semibold">Edit Profile</h2>
@@ -204,7 +209,7 @@ function EditModal({ profile, onClose, onSaved }) {
                   onClick={() => setForm((f) => ({ ...f, avatar: f.avatar === em ? '' : em }))}
                   className={`grid size-9 place-items-center rounded-lg border text-lg transition
                     ${form.avatar === em
-                      ? 'border-[#c8f169]/40 bg-[#c8f169]/10'
+                      ? 'border-[#8b8bff]/40 bg-[#8b8bff]/10'
                       : 'border-white/[0.08] bg-white/[0.03] hover:border-white/20'
                     }`}
                   aria-label={`Select ${em} avatar`}
@@ -216,7 +221,7 @@ function EditModal({ profile, onClose, onSaved }) {
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, avatar: '' }))}
                 className={`grid size-9 place-items-center rounded-lg border text-xs font-semibold transition
-                  ${!form.avatar ? 'border-[#c8f169]/40 bg-[#c8f169]/10 text-[#c8f169]' : 'border-white/[0.08] bg-white/[0.03] text-white/30 hover:border-white/20'}`}
+                  ${!form.avatar ? 'border-[#8b8bff]/40 bg-[#8b8bff]/10 text-[#8b8bff]' : 'border-white/[0.08] bg-white/[0.03] text-white/30 hover:border-white/20'}`}
                 aria-label="Use initials"
               >
                 AB
@@ -272,7 +277,7 @@ function EditModal({ profile, onClose, onSaved }) {
             <button
               type="submit"
               disabled={saving}
-              className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#c8f169] py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#8b8bff] py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
               Save
@@ -311,7 +316,7 @@ function RecentScoreRow({ entry }) {
 // ─── Main page ────────────────────────────────────────────────
 
 export default function ProfilePage() {
-  const { user: authUser } = useAuth()
+  const { updateUser } = useAuth()
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -322,7 +327,7 @@ export default function ProfilePage() {
     setError('')
     getProfile()
       .then(setProfile)
-      .catch((err) => setError(err.response?.data?.message ?? 'Gagal memuat profil.'))
+      .catch((err) => setError(apiErrorMessage(err, 'Gagal memuat profil.')))
       .finally(() => setLoading(false))
   }, [])
 
@@ -344,7 +349,7 @@ export default function ProfilePage() {
       <DashboardLayout>
         <div className="max-w-sm border border-[#ef8b72]/18 bg-[#ef8b72]/[0.04] p-7" role="alert">
           <p className="text-sm text-[#ef8b72]">{error}</p>
-          <button onClick={fetchProfile} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#c8f169] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91]">
+          <button onClick={fetchProfile} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#8b8bff] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff]">
             Coba lagi
           </button>
         </div>
@@ -362,51 +367,89 @@ export default function ProfilePage() {
         <EditModal
           profile={profile}
           onClose={() => setEditing(false)}
-          onSaved={(updated) => setProfile(updated)}
+          onSaved={(updated) => {
+            setProfile(updated)
+            updateUser({ id: updated.id, username: updated.username, email: updated.email, avatar: updated.avatar, role: updated.role })
+          }}
         />
       )}
 
       {/* ── Hero ── */}
       <header className="animate-rise">
-        <div className="relative overflow-hidden border border-white/[0.08] bg-[#171b19] p-6 sm:p-8">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#1b1e34] via-[#171a2b] to-[#121425] p-6 shadow-xl shadow-black/10 sm:p-8">
           {/* Lime glow */}
-          <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-[#c8f169]/8 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-[#8b8bff]/8 blur-3xl" aria-hidden="true" />
 
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
             {/* Avatar */}
-            <AvatarDisplay avatar={profile.avatar} username={profile.username} size="xl" />
+            <AvatarDisplay avatar={profile.avatar} username={profile.username} frame={profile.selectedFrame} size="xl" />
 
             {/* Info */}
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-[#c8f169]">
-                {profile.role === 'ADMIN' ? '👑 Admin' : 'Player'}
-              </p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="rounded-full bg-gradient-to-r from-[#8b8bff] to-[#7dd3fc] px-2.5 py-0.5 text-[10px] font-black uppercase text-[#111323]">
+                  LEVEL {profile.level ?? 1}
+                </span>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-[#8b8bff]">
+                  {profile.role === 'ADMIN' ? '👑 Admin' : 'Player'}
+                </span>
+                {profile.selectedTitle && (
+                  <span className="rounded-full border border-[#ef8b72]/30 bg-[#ef8b72]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#ef8b72]">
+                    {profile.selectedTitle}
+                  </span>
+                )}
+              </div>
               <h1 className="mt-1 text-3xl font-semibold">{profile.username}</h1>
               <p className="mt-0.5 text-sm text-white/40">{profile.email}</p>
-              <p className="mt-1 text-xs text-white/25">
+
+              {/* XP Progression Bar */}
+              {profile.levelInfo && (
+                <div className="mt-3 max-w-xs">
+                  <div className="flex justify-between text-[11px] font-medium text-white/50">
+                    <span>XP Progress (Lvl {profile.level ?? 1})</span>
+                    <span className="font-mono text-white/70">
+                      {profile.levelInfo.xpInLevel} / {profile.levelInfo.xpRequiredForNext} XP ({profile.levelInfo.progressPercent}%)
+                    </span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-black/40">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#8b8bff] to-[#7dd3fc] transition-all duration-500"
+                      style={{ width: `${profile.levelInfo.progressPercent}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <p className="mt-2 text-xs text-white/25">
                 Member since {new Date(profile.createdAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
               </p>
             </div>
 
-            {/* Edit button */}
-            <button
-              onClick={() => setEditing(true)}
-              className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-white/10 px-4 py-2.5 text-sm text-white/55 transition hover:border-[#c8f169]/30 hover:text-[#c8f169] sm:self-auto"
-            >
-              <Edit3 className="size-4" /> Edit Profile
-            </button>
+            {/* Edit button & Quests link */}
+            <div className="flex flex-col gap-2 shrink-0">
+              <button
+                onClick={() => setEditing(true)}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2.5 text-sm text-white/55 transition hover:border-[#8b8bff]/30 hover:text-[#8b8bff]"
+              >
+                <Edit3 className="size-4" /> Edit Profile
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* ── Stats grid ── */}
-      <div className="mt-4 grid grid-cols-2 gap-3 animate-rise sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 animate-rise sm:grid-cols-3 lg:grid-cols-6">
+        <StatItem label="Player Level" value={`Lvl ${profile.level ?? 1}`}
+          sub={`${profile.xp ?? 0} total XP`} icon={Award} color="text-[#8b8bff]" />
         <StatItem label="Total Score" value={profile.totalScore.toLocaleString('id-ID')}
-          icon={Trophy} color="text-[#c8f169]" />
+          icon={Trophy} color="text-[#8b8bff]" />
         <StatItem label="Global Rank" value={`#${profile.rank}`}
           icon={Trophy} color="text-[#FFD700]" />
         <StatItem label="Games Played" value={profile.gamesPlayed.toLocaleString('id-ID')}
-          icon={Gamepad2} color="text-[#8fd2dd]" />
+          icon={Gamepad2} color="text-[#7dd3fc]" />
+        <StatItem label="Quests Done" value={String(profile.questsCompleted ?? 0)}
+          icon={Award} color="text-[#7dd3fc]" />
         <StatItem label="Achievements"
           value={`${profile.achievementsUnlocked}/${profile.achievementsTotal}`}
           icon={Award} color="text-[#ef8b72]" />
@@ -415,7 +458,7 @@ export default function ProfilePage() {
       {/* ── Bottom row: favorite game + recent scores ── */}
       <div className="mt-4 grid gap-4 animate-rise-delayed lg:grid-cols-2">
         {/* Favorite game */}
-        <div className="border border-white/[0.08] bg-[#171b19] p-5">
+        <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#191c31] to-[#131526] p-5">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Favorite Game</p>
           {profile.favoriteGame ? (
             <div className="mt-4 flex items-center gap-4">
@@ -433,7 +476,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Recent scores */}
-        <div className="border border-white/[0.08] bg-[#171b19] p-5">
+        <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#191c31] to-[#131526] p-5">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Recent Scores</p>
           {profile.recentScores.length > 0 ? (
             <div className="mt-2 divide-y divide-white/[0.06]">

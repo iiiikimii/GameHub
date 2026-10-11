@@ -1,8 +1,8 @@
 import './config/env.js'
-import cors from 'cors'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import achievementRoutes from './routes/achievementRoutes.js'
+import analyticsRoutes from './routes/analyticsRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
 import challengeRoutes from './routes/challengeRoutes.js'
 import profileRoutes from './routes/profileRoutes.js'
@@ -10,10 +10,15 @@ import authRoutes from './routes/authRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
 import gameRoutes from './routes/gameRoutes.js'
 import leaderboardRoutes from './routes/leaderboardRoutes.js'
+import questRoutes from './routes/questRoutes.js'
+import rankedRoutes from './routes/rankedRoutes.js'
+import socialRoutes from './routes/socialRoutes.js'
+import chessRoutes from './routes/chessRoutes.js'
 import scoreRoutes from './routes/scoreRoutes.js'
 import { errorMiddleware } from './middleware/errorMiddleware.js'
 import { notFoundMiddleware } from './middleware/notFoundMiddleware.js'
 import healthRoutes from './routes/healthRoutes.js'
+import { createCorsMiddleware } from './config/cors.js'
 
 const app = express()
 
@@ -29,17 +34,23 @@ const limiter = rateLimit({
   },
 })
 
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.disable('x-powered-by')
+app.use(createCorsMiddleware())
 app.use(express.json({ limit: '1mb' }))
 app.use('/api/', limiter) // Apply rate limiter to all /api/ routes
 app.use('/api/auth', authRoutes)
 app.use(achievementRoutes)
+app.use(analyticsRoutes)
 app.use(adminRoutes)
 app.use(challengeRoutes)
 app.use(profileRoutes)
 app.use(dashboardRoutes)
 app.use(gameRoutes)
 app.use(leaderboardRoutes)
+app.use(questRoutes)
+app.use(rankedRoutes)
+app.use(socialRoutes)
+app.use(chessRoutes)
 app.use(scoreRoutes)
 app.use(healthRoutes)
 app.use(notFoundMiddleware)

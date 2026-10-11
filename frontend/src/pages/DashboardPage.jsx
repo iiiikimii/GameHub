@@ -1,12 +1,15 @@
 import {
   Award,
+  Compass,
   Gamepad2,
   RefreshCw,
   Sparkles,
+  Swords,
   Trophy,
   Zap,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import AchievementCard from '../components/AchievementCard.jsx'
 import ChallengeCard from '../components/ChallengeCard.jsx'
 import GameCard from '../components/GameCard.jsx'
@@ -34,7 +37,7 @@ function formatScore(score) {
 
 function SkeletonCard() {
   return (
-    <div className="border border-white/[0.08] bg-[#171b19] p-5 sm:p-6">
+    <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#191c31] to-[#131526] p-5 shadow-lg shadow-black/10 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div className="skeleton h-3 w-20 rounded" />
         <div className="skeleton size-10 rounded-xl" />
@@ -47,7 +50,7 @@ function SkeletonCard() {
 
 function SkeletonGameCard() {
   return (
-    <div className="border border-white/[0.08] bg-[#171b19] p-4 sm:p-5">
+    <div className="border border-white/[0.08] bg-[#171a2b] p-4 sm:p-5">
       <div className="flex items-start gap-4">
         <div className="skeleton size-12 rounded-xl" />
         <div className="flex-1">
@@ -63,7 +66,7 @@ function SkeletonGameCard() {
 
 function SkeletonAchievement() {
   return (
-    <div className="flex items-center gap-3.5 border border-white/[0.08] bg-[#171b19] p-4">
+    <div className="flex items-center gap-3.5 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-[#191c31] to-[#131526] p-4">
       <div className="skeleton size-11 rounded-xl" />
       <div className="flex-1">
         <div className="skeleton h-3 w-28 rounded" />
@@ -184,7 +187,7 @@ export default function DashboardPage() {
           <p className="mt-2 text-sm leading-6 text-white/50">{error}</p>
           <button
             onClick={retry}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#c8f169] px-5 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91]"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#8b8bff] px-5 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff]"
           >
             <RefreshCw className="size-4" />
             Coba lagi
@@ -202,20 +205,20 @@ export default function DashboardPage() {
       <div className="animate-rise">
 
         {/* ── Greeting banner ─────────────────────────────── */}
-        <header className="relative overflow-hidden rounded-none border border-white/[0.07] bg-[#171b19] px-6 py-7 sm:px-8 sm:py-9">
+        <header className="relative overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#1b1e34] via-[#171a2b] to-[#121425] px-6 py-7 shadow-xl shadow-black/10 sm:px-8 sm:py-9">
           {/* Accent glow */}
           <div
             className="pointer-events-none absolute -right-8 -top-8 size-48 rounded-full opacity-50 blur-3xl"
-            style={{ background: 'rgba(200,241,105,0.12)' }}
+            style={{ background: 'rgba(139, 139, 255,0.12)' }}
             aria-hidden="true"
           />
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-[#c8f169]">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-[#8b8bff]">
                 Player overview
               </p>
               <h1 className="mt-2 text-3xl font-semibold leading-none sm:text-4xl">
-                {getGreeting()}, <span className="text-[#c8f169]">{user?.username}</span> 👋
+                {getGreeting()}, <span className="text-[#8b8bff]">{user?.username}</span> 👋
               </h1>
               <p className="mt-2.5 text-sm text-white/45">
                 {stats.gamesPlayed > 0
@@ -226,7 +229,7 @@ export default function DashboardPage() {
 
             {/* Quick stat pills */}
             <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-col sm:items-end">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#c8f169]/20 bg-[#c8f169]/8 px-3 py-1.5 text-xs font-semibold text-[#c8f169]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#8b8bff]/20 bg-[#8b8bff]/8 px-3 py-1.5 text-xs font-semibold text-[#8b8bff]">
                 <Zap className="size-3.5" aria-hidden="true" />
                 {formatScore(stats.totalScore)} pts
               </span>
@@ -280,6 +283,65 @@ export default function DashboardPage() {
             />
           </div>
         </section>
+
+        {/* ── Quests & Progression + Ranked Season Banners ── */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <section
+            aria-label="Quests & Progression Link"
+            className="flex items-center justify-between gap-4 rounded-2xl border border-[#8b8bff]/30 bg-gradient-to-br from-[#8b8bff]/10 via-[#171a2b] to-transparent p-5 shadow-lg"
+          >
+            <div className="flex items-center gap-3.5">
+              <span className="grid size-11 place-items-center rounded-xl bg-[#8b8bff] text-[#111323] shadow-md shadow-[#8b8bff]/30 shrink-0">
+                <Compass className="size-5" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#8b8bff]">
+                  Missions & XP
+                </p>
+                <h3 className="text-sm font-bold text-white tracking-tight">
+                  Daily & Weekly Quests
+                </h3>
+                <p className="text-xs text-white/50 line-clamp-1">
+                  Earn XP, unlock cosmetic titles and profile borders.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/quests"
+              className="inline-flex items-center justify-center rounded-xl bg-[#8b8bff] px-4 py-2 text-xs font-bold text-[#111323] shadow-md transition hover:bg-[#d9dbff] shrink-0"
+            >
+              Quests
+            </Link>
+          </section>
+
+          <section
+            aria-label="Ranked Arena Link"
+            className="flex items-center justify-between gap-4 rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 via-[#171a2b] to-transparent p-5 shadow-lg"
+          >
+            <div className="flex items-center gap-3.5">
+              <span className="grid size-11 place-items-center rounded-xl bg-purple-500 text-white shadow-md shadow-purple-500/30 shrink-0">
+                <Swords className="size-5" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-purple-300">
+                  Season 1: Active
+                </p>
+                <h3 className="text-sm font-bold text-white tracking-tight">
+                  Ranked Arena & Tiers
+                </h3>
+                <p className="text-xs text-white/50 line-clamp-1">
+                  Compete for Bronze to Diamond tiers and season rewards.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/ranked"
+              className="inline-flex items-center justify-center rounded-xl bg-purple-500 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-purple-400 shrink-0"
+            >
+              Enter Arena
+            </Link>
+          </section>
+        </div>
 
         {/* ── Challenge & Achievements row ─────────────────── */}
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.4fr_0.9fr]">

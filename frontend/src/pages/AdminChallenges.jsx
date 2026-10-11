@@ -27,44 +27,44 @@ function ChallengeModal({ open, challenge, games, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm overflow-y-auto">
-      <div className="w-full max-w-md border border-white/10 bg-[#171b19] shadow-2xl my-8">
+      <div className="w-full max-w-md border border-white/10 bg-[#171a2b] shadow-2xl my-8">
         <div className="border-b border-white/[0.07] px-5 py-4">
           <h2 className="font-semibold">{challenge ? 'Edit Challenge' : 'Add Challenge'}</h2>
         </div>
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="mb-1 block text-xs text-white/50">Title</label>
-            <input required type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]" />
+            <label htmlFor="challenge-title" className="mb-1 block text-xs text-white/50">Title</label>
+            <input id="challenge-title" required type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]" />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-white/50">Description</label>
-            <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]" rows={2} />
+            <label htmlFor="challenge-description" className="mb-1 block text-xs text-white/50">Description</label>
+            <textarea id="challenge-description" value={form.description} onChange={e => setForm({...form, description: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]" rows={2} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-white/50">Target Game (Optional)</label>
-            <select value={form.game_id} onChange={e => setForm({...form, game_id: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]">
+            <label htmlFor="challenge-game" className="mb-1 block text-xs text-white/50">Target Game (Optional)</label>
+            <select id="challenge-game" value={form.game_id} onChange={e => setForm({...form, game_id: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]">
               <option value="">Any Game</option>
               {games.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs text-white/50">Target Score</label>
-              <input required type="number" value={form.target_score} onChange={e => setForm({...form, target_score: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]" />
+              <label htmlFor="challenge-target-score" className="mb-1 block text-xs text-white/50">Target Score</label>
+              <input id="challenge-target-score" required type="number" value={form.target_score} onChange={e => setForm({...form, target_score: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]" />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-white/50">Reward Points</label>
-              <input required type="number" value={form.reward_points} onChange={e => setForm({...form, reward_points: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]" />
+              <label htmlFor="challenge-reward-points" className="mb-1 block text-xs text-white/50">Reward Points</label>
+              <input id="challenge-reward-points" required type="number" value={form.reward_points} onChange={e => setForm({...form, reward_points: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs text-white/50">Start Date</label>
-              <input required type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08] [color-scheme:dark]" />
+              <label htmlFor="challenge-start-date" className="mb-1 block text-xs text-white/50">Start Date</label>
+              <input id="challenge-start-date" required type="date" value={form.start_date} onChange={e => setForm({...form, start_date: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08] [color-scheme:dark]" />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-white/50">End Date</label>
-              <input required type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08] [color-scheme:dark]" />
+              <label htmlFor="challenge-end-date" className="mb-1 block text-xs text-white/50">End Date</label>
+              <input id="challenge-end-date" required type="date" value={form.end_date} onChange={e => setForm({...form, end_date: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08] [color-scheme:dark]" />
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -73,7 +73,7 @@ function ChallengeModal({ open, challenge, games, onClose, onSave }) {
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t border-white/[0.07]">
             <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-white/50">Cancel</button>
-            <button type="submit" className="rounded-full bg-[#c8f169] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d7fa91]">Save</button>
+            <button type="submit" className="rounded-full bg-[#8b8bff] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d9dbff]">Save</button>
           </div>
         </form>
       </div>
@@ -132,12 +132,12 @@ export default function AdminChallenges() {
   return (
     <AdminLayout title="Challenges" subtitle="Manage daily and weekly challenges">
       <div className="mb-4 flex justify-end">
-        <button onClick={() => { setEditingCh(null); setModalOpen(true) }} className="flex items-center gap-2 rounded-full bg-[#c8f169] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d7fa91]">
+        <button onClick={() => { setEditingCh(null); setModalOpen(true) }} className="flex items-center gap-2 rounded-full bg-[#8b8bff] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d9dbff]">
           <Plus className="size-4" /> Add Challenge
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-white/[0.08] bg-[#171b19]">
+      <div className="overflow-x-auto rounded-lg border border-white/[0.08] bg-[#171a2b]">
         <table className="w-full text-left text-sm text-white/70">
           <thead className="border-b border-white/[0.08] bg-white/[0.02] text-xs font-semibold text-white/50 uppercase">
             <tr>
@@ -163,7 +163,7 @@ export default function AdminChallenges() {
                   </td>
                   <td className="px-4 py-3 text-xs">
                     <div>Score: {c.target_score}</div>
-                    <div className="text-[#c8f169]">+{c.reward_points} pts</div>
+                    <div className="text-[#8b8bff]">+{c.reward_points} pts</div>
                   </td>
                   <td className="px-4 py-3 text-xs">
                     <div>{c.start_date.split('T')[0]}</div>

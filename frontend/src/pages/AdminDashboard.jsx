@@ -48,13 +48,13 @@ export default function AdminDashboard() {
             label="Total Users"
             value={stats.totalUsers.toLocaleString()}
             icon={Users}
-            color={{ bg: 'bg-[#8fd2dd]/10', text: 'text-[#8fd2dd]' }}
+            color={{ bg: 'bg-[#7dd3fc]/10', text: 'text-[#7dd3fc]' }}
           />
           <StatCard
             label="Active Games"
             value={stats.activeGames.toLocaleString()}
             icon={Gamepad2}
-            color={{ bg: 'bg-[#c8f169]/10', text: 'text-[#c8f169]' }}
+            color={{ bg: 'bg-[#8b8bff]/10', text: 'text-[#8b8bff]' }}
           />
           <StatCard
             label="Active Challenges"
@@ -76,11 +76,11 @@ export default function AdminDashboard() {
              </div>
              <div className="glass-card rounded-xl p-5 text-center transition hover:-translate-y-1">
                <p className="heading-gradient text-3xl font-bold">{stats.totalScoreSum.toLocaleString()}</p>
-               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#c8f169]">Total Points Earned</p>
+               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#8b8bff]">Total Points Earned</p>
              </div>
              <div className="glass-card rounded-xl p-5 text-center transition hover:-translate-y-1">
                <p className="heading-gradient text-3xl font-bold">{stats.totalAchievementsUnlocked.toLocaleString()}</p>
-               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#8fd2dd]">Achievements Unlocked</p>
+               <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#7dd3fc]">Achievements Unlocked</p>
              </div>
           </div>
         </div>

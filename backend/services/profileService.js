@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import pool from '../config/database.js'
+import { calculateLevelInfo } from './progressionService.js'
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const usernamePattern = /^[A-Za-z0-9_]{3,50}$/
@@ -11,7 +12,7 @@ function httpError(statusCode, message) {
 }
 
 /**
- * Full profile for the current user — stats, favorite game, recent scores.
+ * Full profile for the current user — stats, favorite game, recent scores, quests & progression.
  */
 export async function getProfile(userId) {
   const [rows] = await pool.query(
@@ -22,10 +23,16 @@ export async function getProfile(userId) {
        u.avatar,
        u.role,
        u.total_score,
+       u.xp,
+       u.level,
+       u.selected_title,
+       u.selected_frame,
        u.created_at,
        (SELECT COUNT(*) FROM game_sessions gs WHERE gs.user_id = u.id) AS games_played,
        (SELECT COUNT(*) FROM user_achievements ua WHERE ua.user_id = u.id) AS achievements_unlocked,
        (SELECT COUNT(*) FROM achievements) AS achievements_total,
+       (SELECT COUNT(*) FROM user_quests uq WHERE uq.user_id = u.id AND uq.is_completed = 1) AS quests_completed,
+       (SELECT COUNT(*) FROM user_cosmetics uc WHERE uc.user_id = u.id) AS cosmetics_unlocked,
        (SELECT COUNT(*) + 1
         FROM users other
         WHERE other.total_score > u.total_score
@@ -63,6 +70,8 @@ export async function getProfile(userId) {
     [userId],
   )
 
+  const levelInfo = calculateLevelInfo(user.xp)
+
   return {
     id: Number(user.id),
     username: user.username,
@@ -70,10 +79,17 @@ export async function getProfile(userId) {
     avatar: user.avatar ?? null,
     role: user.role,
     totalScore: Number(user.total_score),
+    xp: Number(user.xp || 0),
+    level: Number(user.level || 1),
+    selectedTitle: user.selected_title || null,
+    selectedFrame: user.selected_frame || null,
+    levelInfo,
     rank: Number(user.rank),
     gamesPlayed: Number(user.games_played),
     achievementsUnlocked: Number(user.achievements_unlocked),
     achievementsTotal: Number(user.achievements_total),
+    questsCompleted: Number(user.quests_completed || 0),
+    cosmeticsUnlocked: Number(user.cosmetics_unlocked || 0),
     createdAt: user.created_at,
     favoriteGame: favRows[0]
       ? {

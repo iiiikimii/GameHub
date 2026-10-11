@@ -1,6 +1,5 @@
 import {
   Award,
-  Bolt,
   BookOpen,
   Brain,
   Calendar,
@@ -39,11 +38,11 @@ function getIcon(iconName) {
 // ─── Requirement type color & label ───────────────────────────
 
 const TYPE_META = {
-  games_played:       { color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10', label: 'Games Played' },
-  total_score:        { color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10', label: 'Total Score' },
-  reaction_time_ms:   { color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10', label: 'Reaction Speed' },
+  games_played:       { color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10', label: 'Games Played' },
+  total_score:        { color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10', label: 'Total Score' },
+  reaction_time_ms:   { color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10', label: 'Reaction Speed' },
   memory_match_hard:  { color: 'text-[#ef8b72]', bg: 'bg-[#ef8b72]/10', label: 'Memory Match' },
-  daily_player:       { color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10', label: 'Daily Player' },
+  daily_player:       { color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10', label: 'Daily Player' },
   global_rank_top3:   { color: 'text-[#FFD700]', bg: 'bg-[#FFD700]/10', label: 'Leaderboard' },
 }
 
@@ -67,13 +66,13 @@ function UnlockToast({ names, onDismiss }) {
       role="alert"
       aria-live="assertive"
     >
-      <div className="border border-[#c8f169]/30 bg-[#171b19] p-4 shadow-2xl shadow-black/50">
+      <div className="border border-[#8b8bff]/30 bg-[#171a2b] p-4 shadow-2xl shadow-black/50">
         <div className="flex items-start gap-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c8f169]/15 text-[#c8f169]">
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#8b8bff]/15 text-[#8b8bff]">
             🏆
           </span>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-[#c8f169]">
+            <p className="text-xs font-bold uppercase tracking-wide text-[#8b8bff]">
               Achievement Unlocked!
             </p>
             {names.map((name) => (
@@ -126,14 +125,14 @@ function AchievCard({ achievement }) {
     <article
       className={`group relative overflow-hidden border transition duration-300
         ${isUnlocked
-          ? `border-[#c8f169]/20 bg-[#171b19] hover:border-[#c8f169]/35 hover:-translate-y-0.5 hover:shadow-[0_0_28px_-6px_rgba(200,241,105,0.2)]`
-          : 'border-white/[0.06] bg-[#111512] opacity-60 hover:opacity-75'
+          ? `border-[#8b8bff]/20 bg-[#171a2b] hover:border-[#8b8bff]/35 hover:-translate-y-0.5 hover:shadow-[0_0_28px_-6px_rgba(139, 139, 255,0.2)]`
+          : 'border-white/[0.06] bg-[#111323] opacity-60 hover:opacity-75'
         }`}
     >
       {/* Glow blob (unlocked only) */}
       {isUnlocked && (
         <div
-          className="pointer-events-none absolute -right-5 -top-5 size-24 rounded-full bg-[#c8f169]/10 blur-2xl transition duration-500 group-hover:opacity-150"
+          className="pointer-events-none absolute -right-5 -top-5 size-24 rounded-full bg-[#8b8bff]/10 blur-2xl transition duration-500 group-hover:opacity-150"
           aria-hidden="true"
         />
       )}
@@ -150,7 +149,7 @@ function AchievCard({ achievement }) {
           </span>
 
           {isUnlocked ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#c8f169]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#c8f169]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#8b8bff]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#8b8bff]">
               <CheckCircle2 className="size-3" aria-hidden="true" />
               Unlocked
             </span>
@@ -195,7 +194,7 @@ function AchievCard({ achievement }) {
 
 function SkeletonCard() {
   return (
-    <div className="border border-white/[0.06] bg-[#111512] p-5">
+    <div className="border border-white/[0.06] bg-[#111323] p-5">
       <div className="flex items-start justify-between">
         <div className="skeleton size-12 rounded-xl" />
         <div className="skeleton h-5 w-20 rounded-full" />
@@ -216,7 +215,7 @@ function FilterTab({ active, onClick, children }) {
       onClick={onClick}
       className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition whitespace-nowrap
         ${active
-          ? 'border-[#c8f169]/35 bg-[#c8f169]/10 text-[#c8f169]'
+          ? 'border-[#8b8bff]/35 bg-[#8b8bff]/10 text-[#8b8bff]'
           : 'border-white/[0.08] text-white/40 hover:border-white/15 hover:text-white/70'
         }`}
     >
@@ -280,7 +279,7 @@ export default function AchievementsPage() {
 
       {/* Header */}
       <header className="animate-rise">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#c8f169]">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8b8bff]">
           Milestones
         </p>
         <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -293,7 +292,7 @@ export default function AchievementsPage() {
           <button
             onClick={handleCheck}
             disabled={checking || loading}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 px-4 py-2.5 text-sm text-white/55 transition hover:border-[#c8f169]/30 hover:text-[#c8f169] disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 px-4 py-2.5 text-sm text-white/55 transition hover:border-[#8b8bff]/30 hover:text-[#8b8bff] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {checking
               ? <Loader2 className="size-4 animate-spin" />
@@ -306,30 +305,30 @@ export default function AchievementsPage() {
 
       {/* Progress overview */}
       {!loading && achievements.length > 0 && (
-        <div className="animate-rise mt-6 border border-white/[0.08] bg-[#171b19] p-5 sm:p-6">
+        <div className="animate-rise mt-6 border border-white/[0.08] bg-[#171a2b] p-5 sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm text-white/45">Overall progress</p>
               <p className="mt-1 text-3xl font-semibold">
-                <span className="text-[#c8f169]">{unlocked.length}</span>
+                <span className="text-[#8b8bff]">{unlocked.length}</span>
                 <span className="text-white/30">/{achievements.length}</span>
               </p>
             </div>
             <div className="text-right">
-              <p className="text-4xl font-semibold text-[#c8f169]">{percent}%</p>
+              <p className="text-4xl font-semibold text-[#8b8bff]">{percent}%</p>
               <p className="text-xs text-white/30">Complete</p>
             </div>
           </div>
           {/* Master progress bar */}
           <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-white/8">
             <div
-              className="h-full rounded-full bg-[#c8f169] transition-[width] duration-1000 ease-out"
+              className="h-full rounded-full bg-[#8b8bff] transition-[width] duration-1000 ease-out"
               style={{ width: `${percent}%` }}
             />
           </div>
           {/* Mini breakdown */}
           <div className="mt-3 flex gap-4 text-xs text-white/35">
-            <span><span className="font-semibold text-[#c8f169]">{unlocked.length}</span> unlocked</span>
+            <span><span className="font-semibold text-[#8b8bff]">{unlocked.length}</span> unlocked</span>
             <span><span className="font-semibold text-white/50">{locked.length}</span> remaining</span>
           </div>
         </div>
@@ -364,7 +363,7 @@ export default function AchievementsPage() {
           <p className="mt-2 text-sm text-white/55">{error}</p>
           <button
             onClick={() => setAttempt((n) => n + 1)}
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#c8f169] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91]"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#8b8bff] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff]"
           >
             <RefreshCw className="size-4" /> Coba lagi
           </button>

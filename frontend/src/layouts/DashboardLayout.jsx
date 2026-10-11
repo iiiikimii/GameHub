@@ -6,7 +6,7 @@ export default function DashboardLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[#111512] text-[#f4f4ed]">
+    <div className="min-h-screen bg-[#111318] text-[#f4f4ed]">
       {/* Mobile overlay */}
       {menuOpen && (
         <button
@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex min-h-screen flex-col md:pl-[252px]">
         <Topbar onMenuClick={() => setMenuOpen(true)} />
-        <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6 sm:py-8 xl:px-10 xl:py-10">
+        <main className="mx-auto w-full max-w-[1680px] flex-1 px-4 py-5 sm:px-6 sm:py-7 xl:px-8 xl:py-8 2xl:px-10">
           {children}
         </main>
       </div>

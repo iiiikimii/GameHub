@@ -12,8 +12,8 @@ const gameComponents = {
 }
 
 const categoryMeta = {
-  Reflex: { icon: Zap, color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10' },
-  Puzzle: { icon: Grid2X2, color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10' },
+  Reflex: { icon: Zap, color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10' },
+  Puzzle: { icon: Grid2X2, color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10' },
   Memory: { icon: Brain, color: 'text-[#ef8b72]', bg: 'bg-[#ef8b72]/10' },
 }
 
@@ -26,7 +26,7 @@ const difficultyLabel = {
 function GameLoader() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
-      <Loader2 className="size-8 animate-spin text-[#c8f169]" />
+      <Loader2 className="size-8 animate-spin text-[#8b8bff]" />
     </div>
   )
 }
@@ -62,7 +62,7 @@ export default function GameDetailPage() {
       {/* Loading state */}
       {loading && (
         <div className="flex min-h-[40vh] items-center justify-center animate-fade-in">
-          <Loader2 className="size-8 animate-spin text-[#c8f169]" />
+          <Loader2 className="size-8 animate-spin text-[#8b8bff]" />
         </div>
       )}
 
@@ -81,7 +81,7 @@ export default function GameDetailPage() {
             </button>
             <Link
               to="/games"
-              className="inline-flex items-center gap-2 rounded-full bg-[#c8f169] px-5 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#8b8bff] px-5 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff]"
             >
               <ArrowLeft className="size-4" /> Back to Games
             </Link>
@@ -91,7 +91,7 @@ export default function GameDetailPage() {
 
       {/* Game found but no component (future game) */}
       {!loading && game && !GameComponent && (
-        <div className="mx-auto mt-10 max-w-md border border-white/[0.08] bg-[#171b19] p-8 text-center">
+        <div className="mx-auto mt-10 max-w-md border border-white/[0.08] bg-[#171a2b] p-8 text-center">
           <span className={`inline-grid size-16 place-items-center rounded-2xl ${meta.bg}`}>
             <MetaIcon className={`size-7 ${meta.color}`} />
           </span>
@@ -141,7 +141,7 @@ export default function GameDetailPage() {
           </div>
 
           {/* Game area */}
-          <div className="border border-white/[0.08] bg-[#0f1311]">
+          <div className="border border-white/[0.08] bg-[#0f1120]">
             <Suspense fallback={<GameLoader />}>
               <GameComponent />
             </Suspense>

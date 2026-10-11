@@ -21,30 +21,30 @@ function GameModal({ open, game, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md border border-white/10 bg-[#171b19] shadow-2xl">
+      <div className="w-full max-w-md border border-white/10 bg-[#171a2b] shadow-2xl">
         <div className="border-b border-white/[0.07] px-5 py-4">
           <h2 className="font-semibold">{game ? 'Edit Game' : 'Add Game'}</h2>
         </div>
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="mb-1 block text-xs text-white/50">Name</label>
-            <input required type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]" />
+            <label htmlFor="game-name" className="mb-1 block text-xs text-white/50">Name</label>
+            <input id="game-name" required type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]" />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-white/50">Slug</label>
-            <input required type="text" value={form.slug} onChange={e => setForm({...form, slug: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]" />
+            <label htmlFor="game-slug" className="mb-1 block text-xs text-white/50">Slug</label>
+            <input id="game-slug" required type="text" value={form.slug} onChange={e => setForm({...form, slug: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]" />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-white/50">Category</label>
-            <select required value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]">
+            <label htmlFor="game-category" className="mb-1 block text-xs text-white/50">Category</label>
+            <select id="game-category" required value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]">
               <option value="Reflex">Reflex</option>
               <option value="Puzzle">Puzzle</option>
               <option value="Memory">Memory</option>
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs text-white/50">Difficulty</label>
-            <select required value={form.difficulty} onChange={e => setForm({...form, difficulty: e.target.value})} className="w-full rounded bg-[#111512] px-3 py-2 text-sm text-white border border-white/[0.08]">
+            <label htmlFor="game-difficulty" className="mb-1 block text-xs text-white/50">Difficulty</label>
+            <select id="game-difficulty" required value={form.difficulty} onChange={e => setForm({...form, difficulty: e.target.value})} className="w-full rounded bg-[#111323] px-3 py-2 text-sm text-white border border-white/[0.08]">
               <option value="Easy">Easy</option>
               <option value="Medium">Medium</option>
               <option value="Hard">Hard</option>
@@ -56,7 +56,7 @@ function GameModal({ open, game, onClose, onSave }) {
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t border-white/[0.07]">
             <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-white/50">Cancel</button>
-            <button type="submit" className="rounded-full bg-[#c8f169] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d7fa91]">Save</button>
+            <button type="submit" className="rounded-full bg-[#8b8bff] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d9dbff]">Save</button>
           </div>
         </form>
       </div>
@@ -107,12 +107,12 @@ export default function AdminGames() {
   return (
     <AdminLayout title="Games" subtitle="Manage available games">
       <div className="mb-4 flex justify-end">
-        <button onClick={() => { setEditingGame(null); setModalOpen(true) }} className="flex items-center gap-2 rounded-full bg-[#c8f169] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d7fa91]">
+        <button onClick={() => { setEditingGame(null); setModalOpen(true) }} className="flex items-center gap-2 rounded-full bg-[#8b8bff] px-4 py-2 text-sm font-semibold text-[#172015] hover:bg-[#d9dbff]">
           <Plus className="size-4" /> Add Game
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-white/[0.08] bg-[#171b19]">
+      <div className="overflow-x-auto rounded-lg border border-white/[0.08] bg-[#171a2b]">
         <table className="w-full text-left text-sm text-white/70">
           <thead className="border-b border-white/[0.08] bg-white/[0.02] text-xs font-semibold text-white/50 uppercase">
             <tr>

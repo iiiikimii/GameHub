@@ -2,13 +2,14 @@ import jwt from 'jsonwebtoken'
 import pool from '../config/database.js'
 import { failureResponse } from '../utils/apiResponse.js'
 
-const publicUserFields = 'id, username, email, avatar, role, total_score, created_at, updated_at'
+const publicUserFields = 'id, username, email, avatar, role, is_active, total_score, created_at, updated_at'
 
 export async function authMiddleware(request, response, next) {
   const authorization = request.get('authorization') || ''
-  const [scheme, token] = authorization.split(' ')
+  const parts = authorization.trim().split(/\s+/)
+  const [scheme, token] = parts
 
-  if (scheme !== 'Bearer' || !token) {
+  if (parts.length !== 2 || scheme.toLowerCase() !== 'bearer' || !token) {
     return response.status(401).json(failureResponse('Authentication token is required'))
   }
 
@@ -38,6 +39,10 @@ export async function authMiddleware(request, response, next) {
 
     if (users.length === 0) {
       return response.status(401).json(failureResponse('User account no longer exists'))
+    }
+
+    if (!users[0].is_active) {
+      return response.status(403).json(failureResponse('This account is disabled'))
     }
 
     request.user = users[0]

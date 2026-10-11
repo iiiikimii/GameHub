@@ -40,7 +40,7 @@ export default function ChallengeCard({ challenge }) {
           <span
             className={`grid size-12 shrink-0 place-items-center rounded-2xl transition shadow-[0_0_15px_rgba(0,0,0,0.2)] ${
               isCompleted
-                ? 'bg-[#c8f169]/15 text-[#c8f169]'
+                ? 'bg-[#8b8bff]/15 text-[#8b8bff]'
                 : 'bg-[#ef8b72]/15 text-[#ef8b72]'
             }`}
           >
@@ -66,7 +66,7 @@ export default function ChallengeCard({ challenge }) {
             label={`Progress ${challenge.title}`}
             tone="coral"
           />
-          <p className={`mt-2 text-right text-[11px] font-bold tracking-wider ${isCompleted ? 'text-[#c8f169]' : 'text-[#ef8b72]'}`}>
+          <p className={`mt-2 text-right text-[11px] font-bold tracking-wider ${isCompleted ? 'text-[#8b8bff]' : 'text-[#ef8b72]'}`}>
             {isCompleted ? '✓ COMPLETE' : `${percent}%`}
           </p>
         </div>
@@ -77,7 +77,7 @@ export default function ChallengeCard({ challenge }) {
             <CalendarDays className="size-4" aria-hidden="true" />
             Ends {endDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
           </span>
-          <span className="inline-flex items-center gap-1.5 font-bold text-[#c8f169]">
+          <span className="inline-flex items-center gap-1.5 font-bold text-[#8b8bff]">
             <Gift className="size-4" aria-hidden="true" />
             +{Number(challenge.reward_points).toLocaleString('id-ID')} pts
           </span>

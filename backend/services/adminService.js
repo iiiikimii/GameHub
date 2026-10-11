@@ -257,14 +257,23 @@ export async function adminListScores(query) {
   }
 }
 
-export async function adminDeleteScore(scoreId) {
-  // Also subtract the score from the user's total
-  const [[score]] = await pool.query('SELECT user_id, score FROM scores WHERE id = ? LIMIT 1', [scoreId])
-  if (!score) throw httpError(404, 'Score not found')
-  const connection = await pool.getConnection()
+export async function adminDeleteScore(scoreId, database = pool) {
+  const connection = await database.getConnection()
   try {
     await connection.beginTransaction()
-    await connection.execute('DELETE FROM scores WHERE id = ?', [scoreId])
+
+    // Lock and read inside the transaction so concurrent delete retries can
+    // only subtract the score once.
+    const [[score]] = await connection.execute(
+      'SELECT user_id, score FROM scores WHERE id = ? LIMIT 1 FOR UPDATE',
+      [scoreId],
+    )
+    if (!score) throw httpError(404, 'Score not found')
+
+    const [deleteResult] = await connection.execute('DELETE FROM scores WHERE id = ?', [scoreId])
+    if (deleteResult.affectedRows !== 1) throw httpError(404, 'Score not found')
+
+    // Also subtract the deleted score from the user's total.
     await connection.execute('UPDATE users SET total_score = GREATEST(0, total_score - ?) WHERE id = ?', [score.score, score.user_id])
     await connection.commit()
     return { scoreId: Number(scoreId) }

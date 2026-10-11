@@ -7,19 +7,19 @@ import { getGames } from '../services/gameService.js'
 const categoryMeta = {
   Reflex: {
     icon: Zap,
-    color: 'text-[#c8f169]',
-    bg: 'bg-[#c8f169]/10',
-    border: 'border-[#c8f169]/20',
-    glow: 'hover:shadow-[0_0_30px_-6px_rgba(200,241,105,0.25)]',
-    badge: 'bg-[#c8f169]/10 text-[#c8f169]',
+    color: 'text-[#8b8bff]',
+    bg: 'bg-[#8b8bff]/10',
+    border: 'border-[#8b8bff]/20',
+    glow: 'hover:shadow-[0_0_30px_-6px_rgba(139, 139, 255,0.25)]',
+    badge: 'bg-[#8b8bff]/10 text-[#8b8bff]',
   },
   Puzzle: {
     icon: Grid2X2,
-    color: 'text-[#8fd2dd]',
-    bg: 'bg-[#8fd2dd]/10',
-    border: 'border-[#8fd2dd]/20',
+    color: 'text-[#7dd3fc]',
+    bg: 'bg-[#7dd3fc]/10',
+    border: 'border-[#7dd3fc]/20',
     glow: 'hover:shadow-[0_0_30px_-6px_rgba(143,210,221,0.25)]',
-    badge: 'bg-[#8fd2dd]/10 text-[#8fd2dd]',
+    badge: 'bg-[#7dd3fc]/10 text-[#7dd3fc]',
   },
   Memory: {
     icon: Brain,
@@ -32,8 +32,8 @@ const categoryMeta = {
 }
 
 const difficultyLabel = {
-  EASY: { label: 'Easy', color: 'text-[#c8f169] bg-[#c8f169]/8' },
-  MEDIUM: { label: 'Medium', color: 'text-[#8fd2dd] bg-[#8fd2dd]/8' },
+  EASY: { label: 'Easy', color: 'text-[#8b8bff] bg-[#8b8bff]/8' },
+  MEDIUM: { label: 'Medium', color: 'text-[#7dd3fc] bg-[#7dd3fc]/8' },
   HARD: { label: 'Hard', color: 'text-[#ef8b72] bg-[#ef8b72]/8' },
 }
 
@@ -45,7 +45,7 @@ function GameListCard({ game }) {
   return (
     <Link
       to={`/games/${game.slug}`}
-      className={`group relative flex flex-col overflow-hidden border border-white/[0.08] bg-[#171b19] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-[#1c2120] ${meta.glow}`}
+      className={`group relative flex flex-col overflow-hidden border border-white/[0.08] bg-[#171a2b] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-[#1c2120] ${meta.glow}`}
     >
       {/* Background glow blob */}
       <div
@@ -92,7 +92,7 @@ function GameListCard({ game }) {
 
 function SkeletonCard() {
   return (
-    <div className="border border-white/[0.08] bg-[#171b19] p-6">
+    <div className="border border-white/[0.08] bg-[#171a2b] p-6">
       <div className="skeleton size-14 rounded-2xl" />
       <div className="skeleton mt-5 h-3 w-16 rounded" />
       <div className="skeleton mt-2 h-6 w-36 rounded" />
@@ -129,7 +129,7 @@ export default function GamesPage() {
     <DashboardLayout>
       {/* Header */}
       <header className="animate-rise">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#c8f169]">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8b8bff]">
           The Arcade
         </p>
         <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">Games</h1>
@@ -151,7 +151,7 @@ export default function GamesPage() {
           <p className="mt-2 text-sm text-white/55">{error}</p>
           <button
             onClick={() => setAttempt((n) => n + 1)}
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#c8f169] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91]"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#8b8bff] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff]"
           >
             <RefreshCw className="size-4" /> Coba lagi
           </button>

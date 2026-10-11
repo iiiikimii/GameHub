@@ -1,0 +1,80 @@
+.chess-board-frame {
+  width: min(100%, 850px, calc(100svh - 190px));
+  aspect-ratio: 1;
+  padding: clamp(6px, 1vw, 12px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: #202420;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+}
+
+.chess-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.chess-square {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  aspect-ratio: 1;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  line-height: 1;
+  transition: filter 120ms ease;
+}
+
+.chess-square--light {
+  background: #e8e2d2;
+}
+
+.chess-square--dark {
+  background: #718669;
+}
+
+.chess-square:not(.chess-square--disabled) {
+  cursor: pointer;
+}
+
+.chess-square:not(.chess-square--disabled):hover {
+  filter: brightness(1.08);
+}
+
+.chess-square--disabled {
+  cursor: default;
+}
+
+.chess-piece {
+  font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", serif;
+  font-size: clamp(2rem, 5.2vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1;
+  user-select: none;
+}
+
+.chess-piece--white {
+  color: #fffdf5;
+  text-shadow: 0 2px 2px rgba(25, 30, 24, 0.9), 0 0 4px rgba(25, 30, 24, 0.75);
+}
+
+.chess-piece--black {
+  color: #1d241e;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 640px) {
+  .chess-board-frame {
+    border-radius: 9px;
+  }
+
+  .chess-piece {
+    font-size: clamp(1.8rem, 9vw, 3rem);
+  }
+}

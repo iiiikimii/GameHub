@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './authContext.js'
 import * as authService from '../services/authService.js'
-
-const tokenKey = 'gamehub_token'
+import { clearSessionToken, readSessionToken, saveSessionToken } from '../services/sessionStore.js'
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem(tokenKey))
+  const [token, setToken] = useState(readSessionToken)
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(() => Boolean(localStorage.getItem(tokenKey)))
+  const [loading, setLoading] = useState(() => Boolean(readSessionToken()))
 
   useEffect(() => {
     let isCurrent = true
@@ -18,30 +17,41 @@ export function AuthProvider({ children }) {
       }
     }
 
-    authService.getCurrentUser()
-      .then(({ user: currentUser }) => {
+    async function refreshSession() {
+      setLoading(true)
+      try {
+        const { user: currentUser } = await authService.getCurrentUser()
         if (isCurrent) setUser(currentUser)
-      })
-      .catch(() => {
-        localStorage.removeItem(tokenKey)
+      } catch (error) {
         if (isCurrent) {
-          setToken(null)
           setUser(null)
+          if (error.response?.status === 401) {
+            clearSessionToken()
+            setToken(null)
+          }
         }
-      })
-      .finally(() => {
+      } finally {
         if (isCurrent) setLoading(false)
-      })
+      }
+    }
+
+    refreshSession()
+    window.addEventListener('online', refreshSession)
 
     return () => {
       isCurrent = false
+      window.removeEventListener('online', refreshSession)
     }
   }, [token])
 
   function saveSession(session) {
-    localStorage.setItem(tokenKey, session.token)
+    saveSessionToken(session.token)
     setToken(session.token)
     setUser(session.user)
+  }
+
+  function updateUser(updatedUser) {
+    setUser((currentUser) => currentUser ? { ...currentUser, ...updatedUser } : updatedUser)
   }
 
   async function login(credentials) {
@@ -57,13 +67,13 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    localStorage.removeItem(tokenKey)
+    clearSessionToken()
     setToken(null)
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

@@ -15,7 +15,7 @@ export default function FormInput({ label, icon: Icon, type = 'text', ...inputPr
           {...inputProps}
           id={inputId}
           type={isPassword && isVisible ? 'text' : type}
-          className="h-12 w-full rounded-xl border border-white/10 bg-[#171b19] pl-11 pr-12 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#c8f169]/70 focus:ring-2 focus:ring-[#c8f169]/15"
+          className="h-12 w-full rounded-xl border border-white/10 bg-[#171a2b] pl-11 pr-12 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#8b8bff]/70 focus:ring-2 focus:ring-[#8b8bff]/15"
         />
         {isPassword && (
           <button

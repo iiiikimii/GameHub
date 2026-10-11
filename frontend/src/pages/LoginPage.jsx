@@ -34,7 +34,7 @@ export default function LoginPage() {
       eyebrow="Welcome back"
       title="Masuk ke GameHub"
       description="Gunakan username atau email untuk melanjutkan."
-      footer={<>Belum punya akun? <Link className="font-semibold text-[#c8f169] hover:text-[#d7fa91]" to="/register">Buat akun</Link></>}
+      footer={<>Belum punya akun? <Link className="font-semibold text-[#8b8bff] hover:text-[#d9dbff]" to="/register">Buat akun</Link></>}
     >
       <form className="space-y-5" onSubmit={handleSubmit}>
         {error && <p className="rounded-xl border border-[#ef8b72]/30 bg-[#ef8b72]/10 px-4 py-3 text-sm text-[#ffad98]" role="alert">{error}</p>}
@@ -57,7 +57,7 @@ export default function LoginPage() {
           onChange={(event) => setPassword(event.target.value)}
           required
         />
-        <button disabled={submitting} className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#c8f169] px-5 font-semibold text-[#172015] transition hover:bg-[#d7fa91] disabled:cursor-not-allowed disabled:opacity-55">
+        <button disabled={submitting} className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#8b8bff] px-5 font-semibold text-[#172015] transition hover:bg-[#d9dbff] disabled:cursor-not-allowed disabled:opacity-55">
           {submitting ? 'Memeriksa akun...' : 'Masuk'} <ArrowRight className="size-4 transition group-hover:translate-x-1" />
         </button>
       </form>

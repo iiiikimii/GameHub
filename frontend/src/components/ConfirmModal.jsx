@@ -49,11 +49,11 @@ export default function ConfirmModal({
       aria-modal="true"
       aria-label={title}
     >
-      <div className="w-full max-w-sm border border-white/10 bg-[#171b19] shadow-2xl">
+      <div className="w-full max-w-sm border border-white/10 bg-[#171a2b] shadow-2xl">
         {/* Header */}
         <div className="flex items-start gap-3 border-b border-white/[0.07] p-5">
-          <span className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-full ${danger ? 'bg-[#ef8b72]/10' : 'bg-[#c8f169]/10'}`}>
-            <AlertTriangle className={`size-4 ${danger ? 'text-[#ef8b72]' : 'text-[#c8f169]'}`} aria-hidden="true" />
+          <span className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-full ${danger ? 'bg-[#ef8b72]/10' : 'bg-[#8b8bff]/10'}`}>
+            <AlertTriangle className={`size-4 ${danger ? 'text-[#ef8b72]' : 'text-[#8b8bff]'}`} aria-hidden="true" />
           </span>
           <div className="flex-1 min-w-0">
             <h2 className="font-semibold">{title}</h2>
@@ -80,7 +80,7 @@ export default function ConfirmModal({
             className={`flex flex-1 items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50
               ${danger
                 ? 'bg-[#ef8b72] text-[#1a0a06] hover:bg-[#f5a48c]'
-                : 'bg-[#c8f169] text-[#172015] hover:bg-[#d7fa91]'
+                : 'bg-[#8b8bff] text-[#172015] hover:bg-[#d9dbff]'
               }`}
           >
             {loading && <Loader2 className="size-4 animate-spin" />}

@@ -13,10 +13,10 @@ export function calculateReactionScore(reactionMs) {
 }
 
 export function getPerformanceLabel(reactionMs) {
-  if (reactionMs <= 150) return { label: 'LIGHTNING', color: '#c8f169' }
-  if (reactionMs <= 250) return { label: 'EXCELLENT', color: '#c8f169' }
-  if (reactionMs <= 350) return { label: 'GREAT', color: '#8fd2dd' }
-  if (reactionMs <= 500) return { label: 'GOOD', color: '#8fd2dd' }
+  if (reactionMs <= 150) return { label: 'LIGHTNING', color: '#8b8bff' }
+  if (reactionMs <= 250) return { label: 'EXCELLENT', color: '#8b8bff' }
+  if (reactionMs <= 350) return { label: 'GREAT', color: '#7dd3fc' }
+  if (reactionMs <= 500) return { label: 'GOOD', color: '#7dd3fc' }
   if (reactionMs <= 800) return { label: 'AVERAGE', color: '#f4f4ed' }
   return { label: 'SLOW', color: '#ef8b72' }
 }

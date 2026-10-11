@@ -20,17 +20,17 @@ import { completeChallenge, getChallenges } from '../services/challengeService.j
 // ─── Constants ───────────────────────────────────────────────
 
 const CATEGORY_META = {
-  Reflex: { icon: Zap,      color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10', bar: 'bg-[#c8f169]' },
-  Puzzle: { icon: Grid2X2,  color: 'text-[#8fd2dd]', bg: 'bg-[#8fd2dd]/10', bar: 'bg-[#8fd2dd]' },
+  Reflex: { icon: Zap,      color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10', bar: 'bg-[#8b8bff]' },
+  Puzzle: { icon: Grid2X2,  color: 'text-[#7dd3fc]', bg: 'bg-[#7dd3fc]/10', bar: 'bg-[#7dd3fc]' },
   Memory: { icon: Brain,    color: 'text-[#ef8b72]', bg: 'bg-[#ef8b72]/10', bar: 'bg-[#ef8b72]' },
-  default:{ icon: Swords,   color: 'text-[#c8f169]', bg: 'bg-[#c8f169]/10', bar: 'bg-[#c8f169]' },
+  default:{ icon: Swords,   color: 'text-[#8b8bff]', bg: 'bg-[#8b8bff]/10', bar: 'bg-[#8b8bff]' },
 }
 
 const STATUS_META = {
-  active:    { label: 'Active',     pill: 'bg-[#c8f169]/10 text-[#c8f169] border-[#c8f169]/20' },
+  active:    { label: 'Active',     pill: 'bg-[#8b8bff]/10 text-[#8b8bff] border-[#8b8bff]/20' },
   completed: { label: 'Completed',  pill: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
   expired:   { label: 'Expired',    pill: 'bg-white/5 text-white/30 border-white/10' },
-  upcoming:  { label: 'Upcoming',   pill: 'bg-[#8fd2dd]/10 text-[#8fd2dd] border-[#8fd2dd]/20' },
+  upcoming:  { label: 'Upcoming',   pill: 'bg-[#7dd3fc]/10 text-[#7dd3fc] border-[#7dd3fc]/20' },
 }
 
 // ─── Celebrate toast ─────────────────────────────────────────
@@ -47,24 +47,24 @@ function CelebrationToast({ result, onDismiss }) {
       role="alert"
       aria-live="assertive"
     >
-      <div className="overflow-hidden border border-[#c8f169]/30 bg-[#171b19] shadow-2xl shadow-black/60">
+      <div className="overflow-hidden border border-[#8b8bff]/30 bg-[#171a2b] shadow-2xl shadow-black/60">
         {/* Top accent bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-[#c8f169] to-[#8fd2dd]" />
+        <div className="h-1 w-full bg-gradient-to-r from-[#8b8bff] to-[#7dd3fc]" />
         <div className="p-5">
           <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#c8f169]/15 text-xl">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#8b8bff]/15 text-xl">
               🎉
             </span>
             <div>
-              <p className="font-bold text-[#c8f169]">Challenge Complete!</p>
+              <p className="font-bold text-[#8b8bff]">Challenge Complete!</p>
               <p className="mt-0.5 text-sm text-white/65">{result.title}</p>
             </div>
           </div>
 
           {result.rewardPoints > 0 && (
-            <div className="mt-4 flex items-center gap-2 rounded-lg bg-[#c8f169]/8 px-4 py-3">
-              <Gift className="size-4 text-[#c8f169]" aria-hidden="true" />
-              <p className="font-semibold text-[#c8f169]">+{result.rewardPoints.toLocaleString('id-ID')} pts</p>
+            <div className="mt-4 flex items-center gap-2 rounded-lg bg-[#8b8bff]/8 px-4 py-3">
+              <Gift className="size-4 text-[#8b8bff]" aria-hidden="true" />
+              <p className="font-semibold text-[#8b8bff]">+{result.rewardPoints.toLocaleString('id-ID')} pts</p>
               {result.newTotalScore != null && (
                 <p className="ml-auto text-xs text-white/35">
                   Total: {result.newTotalScore.toLocaleString('id-ID')}
@@ -158,8 +158,8 @@ function ChallengeCard({ challenge, onComplete }) {
         ${isCompleted
           ? 'border-emerald-500/20 bg-[#101c12]'
           : isExpired
-          ? 'border-white/[0.06] bg-[#111512] opacity-55'
-          : 'border-white/[0.08] bg-[#171b19] hover:border-white/15 hover:-translate-y-0.5 hover:shadow-[0_0_28px_-6px_rgba(200,241,105,0.12)]'
+          ? 'border-white/[0.06] bg-[#111323] opacity-55'
+          : 'border-white/[0.08] bg-[#171a2b] hover:border-white/15 hover:-translate-y-0.5 hover:shadow-[0_0_28px_-6px_rgba(139, 139, 255,0.12)]'
         }`}
     >
       {/* Top glow stripe for active */}
@@ -192,7 +192,7 @@ function ChallengeCard({ challenge, onComplete }) {
           </div>
           {/* Reward pill */}
           <div className="shrink-0 flex flex-col items-end gap-1">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#c8f169]/8 px-2.5 py-1 text-xs font-semibold text-[#c8f169]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#8b8bff]/8 px-2.5 py-1 text-xs font-semibold text-[#8b8bff]">
               <Gift className="size-3" aria-hidden="true" />
               +{challenge.rewardPoints.toLocaleString('id-ID')}
             </span>
@@ -234,7 +234,7 @@ function ChallengeCard({ challenge, onComplete }) {
             {new Date(challenge.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
           </span>
           {timeLeft && (
-            <span className="flex items-center gap-1 text-[#c8f169]/70">
+            <span className="flex items-center gap-1 text-[#8b8bff]/70">
               <Clock className="size-3" aria-hidden="true" />
               {timeLeft}
             </span>
@@ -264,7 +264,7 @@ function ChallengeCard({ challenge, onComplete }) {
               disabled={completing}
               className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50
                 ${challenge.progressPercent >= 100
-                  ? 'bg-[#c8f169] text-[#172015] hover:bg-[#d7fa91]'
+                  ? 'bg-[#8b8bff] text-[#172015] hover:bg-[#d9dbff]'
                   : 'border border-white/10 text-white/50 hover:border-white/20 hover:text-white/80'
                 }`}
             >
@@ -298,7 +298,7 @@ function ChallengeCard({ challenge, onComplete }) {
 
 function SkeletonCard() {
   return (
-    <div className="border border-white/[0.06] bg-[#171b19] p-5 sm:p-6">
+    <div className="border border-white/[0.06] bg-[#171a2b] p-5 sm:p-6">
       <div className="flex items-start gap-3">
         <div className="skeleton size-11 rounded-xl" />
         <div className="flex-1">
@@ -323,7 +323,7 @@ function Tab({ active, onClick, children }) {
       onClick={onClick}
       className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition whitespace-nowrap
         ${active
-          ? 'border-[#c8f169]/35 bg-[#c8f169]/10 text-[#c8f169]'
+          ? 'border-[#8b8bff]/35 bg-[#8b8bff]/10 text-[#8b8bff]'
           : 'border-white/[0.08] text-white/40 hover:border-white/15 hover:text-white/70'
         }`}
     >
@@ -384,7 +384,7 @@ export default function ChallengesPage() {
 
       {/* Header */}
       <header className="animate-rise">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#c8f169]">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[#8b8bff]">
           Daily &amp; Weekly
         </p>
         <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -407,11 +407,11 @@ export default function ChallengesPage() {
       {!loading && challenges.length > 0 && (
         <div className="animate-rise mt-6 grid grid-cols-3 gap-3">
           {[
-            { label: 'Active',    count: active.length,    color: 'text-[#c8f169]' },
+            { label: 'Active',    count: active.length,    color: 'text-[#8b8bff]' },
             { label: 'Completed', count: completed.length, color: 'text-emerald-400' },
             { label: 'Expired',   count: expired.length,   color: 'text-white/30' },
           ].map(({ label, count, color }) => (
-            <div key={label} className="border border-white/[0.08] bg-[#171b19] p-4 text-center">
+            <div key={label} className="border border-white/[0.08] bg-[#171a2b] p-4 text-center">
               <p className={`text-2xl font-semibold ${color}`}>{count}</p>
               <p className="mt-0.5 text-[11px] text-white/35">{label}</p>
             </div>
@@ -451,7 +451,7 @@ export default function ChallengesPage() {
           <p className="mt-2 text-sm text-white/55">{error}</p>
           <button
             onClick={() => setAttempt((n) => n + 1)}
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#c8f169] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d7fa91]"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#8b8bff] px-4 py-2.5 text-sm font-semibold text-[#172015] transition hover:bg-[#d9dbff]"
           >
             <RefreshCw className="size-4" /> Coba lagi
           </button>
