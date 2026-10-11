@@ -13,3 +13,10 @@ test('CORS parses a comma-separated allowlist and ignores empty entries', () => 
     ['https://gamehub.example', 'https://admin.example'],
   )
 })
+
+test('CORS includes the current Vercel deployment and production origins', () => {
+  assert.deepEqual(
+    getAllowedOrigins('https://gamehub.example', ['gamehub-preview.vercel.app', 'gamehub.example']),
+    ['https://gamehub.example', 'https://gamehub-preview.vercel.app'],
+  )
+})

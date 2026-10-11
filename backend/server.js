@@ -37,16 +37,23 @@ attachChessSocket(io, {
   actOnRoom: actOnChessRoom,
 })
 
-try {
-  await checkDatabaseConnection()
-  console.log('MySQL database connection established')
+// Vercel attaches the exported HTTP server to each function invocation. Starting
+// a listener or probing MySQL while the module is imported would break that
+// lifecycle, so retain the explicit startup check only for the local server.
+if (process.env.VERCEL !== '1') {
+  try {
+    await checkDatabaseConnection()
+    console.log('MySQL database connection established')
 
-  httpServer.listen(port, () => {
-    console.log(`GameHub API listening on http://localhost:${port}`)
-  })
-} catch (error) {
-  const reason = error.message || 'No error message returned by the MySQL driver'
-  console.error(`Unable to connect to MySQL (${error.code || 'UNKNOWN'}): ${reason}`)
-  await pool.end()
-  process.exitCode = 1
+    httpServer.listen(port, () => {
+      console.log(`GameHub API listening on http://localhost:${port}`)
+    })
+  } catch (error) {
+    const reason = error.message || 'No error message returned by the MySQL driver'
+    console.error(`Unable to connect to MySQL (${error.code || 'UNKNOWN'}): ${reason}`)
+    await pool.end()
+    process.exitCode = 1
+  }
 }
+
+export default httpServer

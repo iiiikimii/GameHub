@@ -577,14 +577,33 @@ npm run qa
 
 ## Production deployment
 
-The repository does not include provider-specific hosting or reverse-proxy configuration. Use this deployment shape with the host of your choice:
+The repository includes a Vercel configuration at [`vercel.json`](vercel.json). It builds the Vite app from `frontend/`, routes `/api/*` to the Express function, and routes `/socket.io/*` to the HTTP server that hosts the Chess Socket.IO endpoint. The API and web app use the same origin, so `VITE_API_BASE_URL` can stay `/api` (the frontend already uses this default).
 
-1. Provision a reachable MySQL database and back it up before applying the schema/migrations. Apply and verify migrations on staging first.
-2. Configure the backend's private environment variables (`DB_*`, `JWT_SECRET`, `PORT`, and `CORS_ORIGINS`). Use the exact HTTPS frontend origin in the CORS allowlist.
-3. Install backend dependencies with `npm ci` and run the API with `npm start`. The server checks its MySQL connection before listening. Expose `/api/health` through the API host.
-4. Set `VITE_API_BASE_URL` before building the frontend. Use `/api` when the same host reverse-proxies API requests to Express, or the full HTTPS API base URL when frontend and API use separate hosts.
-5. Build with `npm ci && npm run build` in `frontend`, then serve `frontend/dist` over HTTPS. Configure SPA fallback to `index.html` for frontend routes while routing `/api/*` to Express.
-6. Verify login, score submission, leaderboards, Social, and PWA updates against staging before switching production traffic.
+### Deploy to Vercel
+
+1. Push this repository to a Git provider supported by Vercel, then import that repository in the Vercel dashboard. Set the project Root Directory to the repository root (`.`); keep the build and output settings from `vercel.json`.
+2. Provision a MySQL database reachable over the public network from Vercel. Do not use `localhost` or a development database. Confirm the provider's connection and TLS requirements before adding credentials.
+3. Add these server-only variables in Vercel Project Settings → Environment Variables for Preview and Production as appropriate:
+
+   | Variable | Value |
+   | --- | --- |
+   | `DB_HOST` | MySQL provider hostname |
+   | `DB_PORT` | MySQL provider port, usually `3306` |
+   | `DB_USER` | Restricted application database user |
+   | `DB_PASSWORD` | Database password |
+   | `DB_NAME` | GameHub database name |
+   | `JWT_SECRET` | Strong, randomly generated secret; keep the same value across deployments |
+   | `CORS_ORIGINS` | Optional comma-separated custom HTTPS origins; Vercel deployment URLs are added automatically |
+   | `VITE_API_BASE_URL` | Optional; use `/api` for this single-domain deployment |
+
+   Never add database credentials or `JWT_SECRET` as `VITE_*` variables. Vercel injects `VERCEL_URL` and `VERCEL_PROJECT_PRODUCTION_URL`; the backend adds those origins to its CORS allowlist. Add any custom domain to `CORS_ORIGINS`.
+4. Apply the SQL schema and migrations to a staging database first. Back up production and apply migrations manually from a trusted environment; this project does not run migrations during deployment. Do not run migration scripts against production until their impact and backup have been checked.
+5. Deploy a Preview, set its environment variables, then verify `/api/health`, account registration/login, profile, score submission, leaderboards, and PWA routes. After checks pass, configure the Production variables and promote/deploy the production branch.
+6. After attaching a custom domain, add its exact `https://` origin to `CORS_ORIGINS`, redeploy, and verify the same flows over HTTPS.
+
+### Vercel and real-time Chess limitation
+
+Vercel Functions support WebSockets in public beta. A Socket.IO connection stays on one function instance only for that invocation's maximum duration; two players may connect to different instances. This code currently uses Socket.IO's in-memory room adapter, so cross-instance Chess event delivery is not guaranteed. Use a shared Socket.IO adapter such as Redis before relying on multiplayer Chess at production scale, and test reconnection and two separate accounts after deployment. REST API, database persistence, and frontend deployment do not depend on that adapter. See [Vercel's WebSocket announcement](https://vercel.com/changelog/websocket-support-is-now-in-public-beta) and [connection limits/state guidance](https://vercel.com/kb/guide/do-vercel-serverless-functions-support-websocket-connections).
 
 The frontend service worker caches static build assets only. API responses and authenticated data are not cached. A production PWA must be served over HTTPS (except localhost during development).
 
